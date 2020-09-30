@@ -4,6 +4,7 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
+require('dotenv').config();
 
 //Logger
 app.use(morgan("tiny"));
@@ -26,6 +27,11 @@ const PelapakRouter = require("./src/routes/pelapak");
 const ItemRouter = require("./src/routes/item");
 const CartsRouter = require("./src/routes/carts");
 
+app.get("/", (req, res)=>{
+  res.status(200).send({
+    msg:"routes succes"
+  })
+})
 app.use("/article", ArtilceRouter);
 app.use("/category", CategoryRouter);
 app.use("/auth", AuthRouter);
@@ -50,7 +56,7 @@ app.use((err, req, res) => {
     },
   });
 });
-const PORT = 6000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server Running On Port ${PORT}`);
 });
