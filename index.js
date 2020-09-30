@@ -29,7 +29,7 @@ const CartsRouter = require("./src/routes/carts");
 
 app.get("/", (req, res)=>{
   res.status(200).send({
-    msg:"routes succes"
+    msg:"welcome to balobe"
   })
 })
 app.use("/article", ArtilceRouter);
