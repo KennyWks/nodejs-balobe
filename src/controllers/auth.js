@@ -70,9 +70,9 @@ exports.SignupController = async (req, res) => {
             from: userGmail,
             to: dataUserProfiles.email,
             subject: 'Confirm Account',
-            html: '<p>Klik this <a href="http://localhost:6000/auth/confirm?id_user=' + id_user + '&verify_code=' + encodeURI(hashUsername) + '">link</a> for confirm</p>'
+            html: '<p>Klik this <a href="https://balobe.herokuapp.com/auth/confirm?id_user=' + id_user + '&verify_code=' + encodeURI(hashUsername) + '">link</a> for confirm</p>'
         };
-
+        
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) throw err;
             console.log('Email sent: ' + info.response);
