@@ -14,6 +14,8 @@ var serviceAccount = {
   "client_x509_cert_url": process.env.FIREBASE_CLIENT_URL
 };
 
+console.log(process.env.FIREBASE_PROJECT_ID)
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   storageBucket:process.env.FIREBASE_STORAGE_BUCKET
