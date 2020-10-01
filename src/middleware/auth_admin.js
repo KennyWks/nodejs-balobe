@@ -8,7 +8,7 @@ async function AuthAdmin(req, res, next) {
             throw new Error("Not Authorized")
         }
         token = token.replace(/Bearer\s*/, "");
-        const payload = jwt.verify(token, process.env.JWT_TOKEN);
+        const payload = jwt.verify(token, `${process.env.JWT_TOKEN}`);
         req.auth = payload;
         if (req.auth.role_id === 2) {
             next();

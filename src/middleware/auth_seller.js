@@ -9,7 +9,7 @@ async function AuthItems(req, res, next) {
         }
         token = token.replace(/Bearer\s*/, "");
 
-        const payload = jwt.verify(token, process.env.JWT_TOKEN);
+        const payload = jwt.verify(token, `${process.env.JWT_TOKEN}`);
         req.auth = payload;
         if (req.auth.role_id === 2 || req.auth.role_id === 3) {
             next();
