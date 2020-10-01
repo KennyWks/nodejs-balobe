@@ -1,7 +1,6 @@
 require('dotenv').config();
 var admin = require("firebase-admin");
-var privatekey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n");
-console.log(privatekey);
+
 var serviceAccount = {
   "type": "service_account",
   "project_id": "balobe-d2a28",
