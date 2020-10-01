@@ -72,7 +72,7 @@ exports.SignupController = async (req, res) => {
             subject: 'Confirm Account',
             html: '<p>Klik this <a href="https://balobe.herokuapp.com/auth/confirm?id_user=' + id_user + '&verify_code=' + encodeURI(hashUsername) + '">link</a> for confirm</p>'
         };
-        
+
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) throw err;
             console.log('Email sent: ' + info.response);
@@ -147,7 +147,7 @@ exports.LoginController = async (req, res) => {
                             username: dataUser.username,
                             role_id: dataUser.role_id
                         },
-                        process.env.JWT_TOKEN, {
+                        `${process.env.JWT_TOKEN}`, {
                             expiresIn: "1D"
                         }
                     );
