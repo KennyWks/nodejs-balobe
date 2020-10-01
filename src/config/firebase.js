@@ -16,7 +16,7 @@ var serviceAccount = {
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket:process.env.FIREBASE_STORAGE_BUCKET
+  storageBucket:"balobe-d2a28.appspot.com"
 });
 
 module.exports =admin;
