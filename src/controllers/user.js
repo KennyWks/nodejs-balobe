@@ -43,7 +43,6 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
                 }
             });
         } else {
-            console.log(req.file);
             const bucket = firebaseAdmin.storage().bucket();
             const pathFile = `img-users/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
             const data = bucket.file(pathFile);
@@ -51,7 +50,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
             const resultUpdate = await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
             res.status(200).send({
                 data: {
-                    path: `${process.env.FIREBASE_STORAGE_URL}${encodeURIComponent(pathFile)}?alt=media`,
+                    path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
                     msg: "upload image is success"
                 }
             });
