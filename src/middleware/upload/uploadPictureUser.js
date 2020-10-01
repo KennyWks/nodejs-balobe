@@ -1,4 +1,5 @@
 const multer = require("multer");
+require('dotenv').config();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -9,8 +10,10 @@ const storage = multer.diskStorage({
     }
 });
 
+
+const memoryStorage = multer.memoryStorage();
 const upload = multer({
-    storage: storage,
+    storage: process.env.APP_ENV === 'development' ? storage : memoryStorage,
     limits: {
         fileSize: 1024 * 1024 * 2,
     } 

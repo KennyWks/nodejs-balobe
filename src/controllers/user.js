@@ -1,3 +1,5 @@
+require('dotenv').config();
+const firebaseAdmin = require("../config/firebase");
 const fs = require("fs");
 const {
     UpdateImageProfileUserModel,
@@ -9,36 +11,53 @@ const {
 exports.UpdateImageProfileUserContoller = async (req, res) => {
     try {
 
-        const resultGetData = await GetDataUser(req.auth.id_user);
+        if (process.env.APP_ENV === 'development') {
+            const resultGetData = await GetDataUser(req.auth.id_user);
 
-        imageOld = resultGetData[1][0].picture;
+            imageOld = resultGetData[1][0].picture;
 
-        let webPath = req.file.path.replace(/\\/g, '/');
+            let webPath = req.file.path.replace(/\\/g, '/');
 
-        if (imageOld !== 'uploads/img-users/default.JPG' && imageOld !== webPath) {
-            let deleteImage = "./" + imageOld;
-            fs.unlink(deleteImage, function (err) {
-                if (err && err.code == 'ENOENT') {
-                    // file doens't exist
-                    console.info("File doesn't exist, won't remove it.");
-                } else if (err) {
-                    // other errors, e.g. maybe we don't have enough permission
-                    console.error("Error occurred while trying to remove file");
-                } else {
-                    console.info(`removed`);
+            if (imageOld !== 'uploads/img-users/default.JPG' && imageOld !== webPath) {
+                let deleteImage = "./" + imageOld;
+                fs.unlink(deleteImage, function (err) {
+                    if (err && err.code == 'ENOENT') {
+                        // file doens't exist
+                        console.info("File doesn't exist, won't remove it.");
+                    } else if (err) {
+                        // other errors, e.g. maybe we don't have enough permission
+                        console.error("Error occurred while trying to remove file");
+                    } else {
+                        console.info(`removed`);
+                    }
+                });
+            }
+
+            const resultUpdate = await UpdateImageProfileUserModel(webPath, req.auth.id_user);
+
+            res.status(200).send({
+                data: {
+                    id_user: req.auth.id_user,
+                    lokasiFile: webPath,
+                    msg: "upload image is success"
                 }
             });
+        } else {
+            console.log(req.file);
+            const bucket = firebaseAdmin.storage().bucket();
+            const pathFile = `img-users/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
+            const data = bucket.file(pathFile);
+            await data.save(req.file.buffer);
+            const resultUpdate = await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
+            res.status(200).send({
+                data: {
+                    path: `${process.env.FIREBASE_STORAGE_URL}${encodeURIComponent(pathFile)}?alt=media`,
+                    msg: "upload image is success"
+                }
+            });
+
         }
 
-        const resultUpdate = await UpdateImageProfileUserModel(webPath, req.auth.id_user);
-
-        res.status(200).send({
-            data: {
-                id_user: req.auth.id_user,
-                lokasiFile: webPath,
-                msg: "upload image is success"
-            }
-        })
     } catch (error) {
         console.log(error);
         res.status(202).send({
