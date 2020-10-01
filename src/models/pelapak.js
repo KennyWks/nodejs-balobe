@@ -14,9 +14,9 @@ INSERT INTO pelapak(id_owner, name, logo, description, location) values('${data.
     });
 };
 
-exports.GetDetailPelapakModel = (id_pelapak) => {
+exports.GetDetailPelapakModel = (id_owner) => {
     return new Promise((resolve, reject) => {
-        runQuery(`SELECT * FROM pelapak WHERE id_pelapak=${id_pelapak}`, (err, result) => {
+        runQuery(`SELECT * FROM pelapak WHERE id_owner=${id_owner}`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
@@ -25,13 +25,13 @@ exports.GetDetailPelapakModel = (id_pelapak) => {
     });
 }
 
-exports.UpdatePelapakModel = (id_pelapak, body) => {
+exports.UpdatePelapakModel = (id_owner, body) => {
     return new Promise((resolve, reject) => {
-        runQuery(`SELECT * FROM pelapak WHERE id_pelapak=${id_pelapak}`, (err, result) => {
+        runQuery(`SELECT * FROM pelapak WHERE id_owner=${id_owner}`, (err, result) => {
             if (err || !result[1][0]) {
-                return reject(new Error(`pelapak with id : ${id_pelapak} not exists`));
+                return reject(new Error(`pelapak with id : ${id_owner} not exists`));
             }
-            runQuery(`UPDATE pelapak SET ${Object.keys(body).map((v) => `${v} = '${body[v]}'`).join(",")} WHERE id_pelapak=${id_pelapak}`, (err, result) => {
+            runQuery(`UPDATE pelapak SET ${Object.keys(body).map((v) => `${v} = '${body[v]}'`).join(",")} WHERE id_owner=${id_owner}`, (err, result) => {
                 if (err) {
                     return reject(new Error(err));
                 }
@@ -41,9 +41,9 @@ exports.UpdatePelapakModel = (id_pelapak, body) => {
     });
 }
 
-exports.UpdateFotoItemModel = (path, id_pelapak) => {
+exports.UpdateLogoModel = (path, id_owner) => {
     return new Promise((resolve, reject) => {
-        runQuery(`UPDATE pelapak SET logo='${path}' WHERE id_pelapak=${id_pelapak}`, (err, result) => {
+        runQuery(`UPDATE pelapak SET logo='${path}' WHERE id_owner=${id_owner}`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }

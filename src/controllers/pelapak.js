@@ -1,9 +1,11 @@
+require('dotenv').config();
+const firebaseAdmin = require("../config/firebase");
 const {
     CreatePelapakModel,
     GetAllPelapakModel,
     GetDetailPelapakModel,
     UpdatePelapakModel,
-    UpdateFotoItemModel
+    UpdateLogoModel
 } = require("../models/pelapak");
 
 exports.CreatePelapakController = async (req, res) => {
@@ -12,25 +14,25 @@ exports.CreatePelapakController = async (req, res) => {
             throw new Error("Data pelapak can't be empty!")
         }
 
-        const data = {
-            id_owner: req.auth.id_user,
-            name: req.body.name,
-            logo: "default.jpg",
-            description: req.body.description,
-            location: req.body.location,
-        }
+        const queryDataPelapak = await GetDetailPelapakModel(req.auth.id_user);
 
-        const resultQuery = await CreatePelapakModel(data);
-        console.log(resultQuery);
-        if (resultQuery) {
+        if (queryDataPelapak[1][0]) {
+            throw new Error("Your account is registered before")
+        } else {
+            const data = {
+                id_owner: req.auth.id_user,
+                name: req.body.name,
+                logo: "default.jpg",
+                description: req.body.description,
+                location: req.body.location,
+            }
+            const resultQuery = await CreatePelapakModel(data);
             res.status(200).send({
                 data: {
                     id_pelapak: resultQuery[1].insertId,
                     msg: "create pelapak success"
                 },
             });
-        } else {
-            throw new Error("create pelapak failed")
         }
     } catch (error) {
         console.log(error);
@@ -44,7 +46,7 @@ exports.CreatePelapakController = async (req, res) => {
 
 exports.GetDetailPelapakController = async (req, res) => {
     try {
-        const result = await GetDetailPelapakModel(req.params.id);
+        const result = await GetDetailPelapakModel(req.auth.id_user);
         console.log(result);
         if (result[1][0]) {
             res.status(200).send({
@@ -52,7 +54,7 @@ exports.GetDetailPelapakController = async (req, res) => {
             });
         } else {
             res.status(404).send({
-                msg: "id pelapak not found"
+                msg: "id not found"
             });
         }
     } catch (error) {
@@ -82,12 +84,12 @@ exports.UpdatePelapakController = async (req, res) => {
             throw new Error("Please add data to update");
         }
 
-        const result = await UpdatePelapakModel(req.params.id, dataUpdate);
+        const result = await UpdatePelapakModel(req.auth.id_user, dataUpdate);
         console.log(result);
         res.status(200).send({
             data: {
-                id: req.params.id,
-                msg: "your pelapak account is updated"
+                id: req.auth.id_user,
+                msg: "your data pelapak account is updated"
             },
         });
     } catch (error) {
@@ -100,15 +102,30 @@ exports.UpdatePelapakController = async (req, res) => {
     }
 };
 
-exports.UpdateFotoItemContoller = async (req, res) => {
+exports.UpdateLogoContoller = async (req, res) => {
     try {
-        let webPath = req.file.path.replace(/\\/g, '/');
-        const result = await UpdateFotoItemModel(webPath, req.body.id_pelapak);
-        res.status(200).send({
-            data: {
-                lokasiFile: webPath
-            }
-        })
+        if (process.env.APP_ENV === 'development') {
+            let webPath = req.file.path.replace(/\\/g, '/');
+            const result = await UpdateLogoModel(webPath, req.auth.id_user);
+            res.status(200).send({
+                data: {
+                    lokasiFile: webPath,
+                    msg: "upload image is success"
+                }
+            })
+        } else {
+            const pathFile = `img-logo/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
+            const resultUpdate = await UpdateLogoModel(pathFile, req.auth.id_user);
+            const bucket = firebaseAdmin.storage().bucket();
+            const data = bucket.file(pathFile);
+            await data.save(req.file.buffer);
+            res.status(200).send({
+                data: {
+                    path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
+                    msg: "upload image is success"
+                }
+            });
+        }
     } catch (error) {
         console.log(error);
         res.status(202).send({

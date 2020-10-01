@@ -54,9 +54,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
                     msg: "upload image is success"
                 }
             });
-
         }
-
     } catch (error) {
         console.log(error);
         res.status(202).send({
