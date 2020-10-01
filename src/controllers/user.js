@@ -43,9 +43,9 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
                 }
             });
         } else {
+            const pathFile = `img-users/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
             const resultUpdate = await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
             const bucket = firebaseAdmin.storage().bucket();
-            const pathFile = `img-users/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
             const data = bucket.file(pathFile);
             await data.save(req.file.buffer);
             res.status(200).send({
