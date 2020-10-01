@@ -44,7 +44,6 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
             });
         } else {
             console.log(req.file);
-            fireStorageUrl = '"' + process.env.FIREBASE_STORAGE_URL + '"';
             const bucket = firebaseAdmin.storage().bucket();
             const pathFile = `img-users/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
             const data = bucket.file(pathFile);
@@ -52,7 +51,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
             const resultUpdate = await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
             res.status(200).send({
                 data: {
-                    path: `${fireStorageUrl}${encodeURIComponent(pathFile)}?alt=media`,
+                    path: `${process.env.FIREBASE_STORAGE_URL}${encodeURIComponent(pathFile)}?alt=media`,
                     msg: "upload image is success"
                 }
             });
