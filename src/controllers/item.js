@@ -23,7 +23,7 @@ exports.CreateItemController = async (req, res) => {
         }
         if (process.env.APP_ENV === 'development') {
             let webPath = req.file.path.replace(/\\/g, '/');
-            const data = {
+            const dataItems = {
                 id_pelapak: req.body.id_pelapak,
                 id_category: req.body.id_category,
                 name: req.body.name,
@@ -33,7 +33,7 @@ exports.CreateItemController = async (req, res) => {
                 image: webPath,
             }
 
-            const resultQuery = await CreateItemModel(data);
+            const resultQuery = await CreateItemModel(dataItems);
             console.log(resultQuery);
             if (resultQuery) {
                 res.status(200).send({
@@ -49,7 +49,7 @@ exports.CreateItemController = async (req, res) => {
             const nameFileItem = new Date().getTime();
             const pathFile = `img-items/${nameFileItem}.${req.file.mimetype.split("/")[1]}`;
 
-            const data = {
+            const dataItems = {
                 id_pelapak: req.body.id_pelapak,
                 id_category: req.body.id_category,
                 name: req.body.name,
@@ -59,7 +59,7 @@ exports.CreateItemController = async (req, res) => {
                 image: pathFile,
             }
 
-            const resultQuery = await CreateItemModel(data);
+            const resultQuery = await CreateItemModel(dataItems);
             const bucket = firebaseAdmin.storage().bucket();
             const data = bucket.file(pathFile);
             await data.save(req.file.buffer);
