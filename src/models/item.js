@@ -153,7 +153,7 @@ exports.GetReviewByIdModel = (id) => {
     });
 }
 
-exports.GetAllReviewModel= (params) => {
+exports.GetAllReviewModel = (params) => {
     return new Promise((resolve, reject) => {
         const {
             limit,

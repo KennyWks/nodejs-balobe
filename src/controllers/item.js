@@ -255,7 +255,7 @@ exports.UpdateItemImageContoller = async (req, res) => {
                 const pathFile = `img-items/${nameFileItem}.${req.file.mimetype.split("/")[1]}`;
 
                 if (imageOld !== pathFile) {
-                    let deleteImage = `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}`;
+                    let deleteImage = `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(imageOld)}`;
                     fs.unlink(deleteImage, function (err) {
                         if (err && err.code == 'ENOENT') {
                             // file doens't exist
