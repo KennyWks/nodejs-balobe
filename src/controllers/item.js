@@ -1,3 +1,4 @@
+const firebaseAdmin = require("../config/firebase");
 const fs = require("fs");
 const {
     CreateItemModel,
@@ -20,28 +21,54 @@ exports.CreateItemController = async (req, res) => {
         if (!req.body.name || !req.body.price || !req.body.quantity || !req.body.description) {
             throw new Error("data can't be empty")
         }
-        let webPath = req.file.path.replace(/\\/g, '/');
-        const data = {
-            id_pelapak: req.body.id_pelapak,
-            id_category: req.body.id_category,
-            name: req.body.name,
-            price: req.body.price,
-            quantity: req.body.quantity,
-            description: req.body.description,
-            image: webPath,
-        }
+        if (process.env.APP_ENV === 'development') {
+            let webPath = req.file.path.replace(/\\/g, '/');
+            const data = {
+                id_pelapak: req.body.id_pelapak,
+                id_category: req.body.id_category,
+                name: req.body.name,
+                price: req.body.price,
+                quantity: req.body.quantity,
+                description: req.body.description,
+                image: webPath,
+            }
 
-        const resultQuery = await CreateItemModel(data);
-        console.log(resultQuery);
-        if (resultQuery) {
+            const resultQuery = await CreateItemModel(data);
+            console.log(resultQuery);
+            if (resultQuery) {
+                res.status(200).send({
+                    data: {
+                        id: resultQuery[1].insertId,
+                        msg: "create item success"
+                    },
+                });
+            } else {
+                throw new Error("create failed")
+            }
+        } else {
+            const nameFileItem = new Date().getTime();
+            const pathFile = `img-items/${nameFileItem}.${req.file.mimetype.split("/")[1]}`;
+
+            const data = {
+                id_pelapak: req.body.id_pelapak,
+                id_category: req.body.id_category,
+                name: req.body.name,
+                price: req.body.price,
+                quantity: req.body.quantity,
+                description: req.body.description,
+                image: pathFile,
+            }
+
+            const resultQuery = await CreateItemModel(data);
+            const bucket = firebaseAdmin.storage().bucket();
+            const data = bucket.file(pathFile);
+            await data.save(req.file.buffer);
             res.status(200).send({
                 data: {
-                    id: resultQuery[1].insertId,
-                    msg: "create item success"
-                },
+                    path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
+                    msg: "upload image is success"
+                }
             });
-        } else {
-            throw new Error("create failed")
         }
     } catch (error) {
         console.log(error);
@@ -192,38 +219,67 @@ exports.DeleteItemController = async (req, res) => {
 
 exports.UpdateItemImageContoller = async (req, res) => {
     try {
-
         const resultGetData = await GetDataItem(req.params.id_item);
-
         if (resultGetData[1][0]) {
             imageOld = resultGetData[1][0].image;
 
-            let webPath = req.file.path.replace(/\\/g, '/');
+            if (process.env.APP_ENV === 'development') {
 
-            if (imageOld !== webPath) {
-                let deleteImage = "./" + imageOld;
-                fs.unlink(deleteImage, function (err) {
-                    if (err && err.code == 'ENOENT') {
-                        // file doens't exist
-                        console.info("File doesn't exist, won't remove it.");
-                    } else if (err) {
-                        // other errors, e.g. maybe we don't have enough permission
-                        console.error("Error occurred while trying to remove file");
-                    } else {
-                        console.info(`removed`);
+                let webPath = req.file.path.replace(/\\/g, '/');
+                if (imageOld !== webPath) {
+                    let deleteImage = "./" + imageOld;
+                    fs.unlink(deleteImage, function (err) {
+                        if (err && err.code == 'ENOENT') {
+                            // file doens't exist
+                            console.info("File doesn't exist, won't remove it.");
+                        } else if (err) {
+                            // other errors, e.g. maybe we don't have enough permission
+                            console.error("Error occurred while trying to remove file");
+                        } else {
+                            console.info(`removed`);
+                        }
+                    });
+                }
+
+                const resultUpdate = await UpdateImageItemModel(webPath, req.params.id_item);
+
+                res.status(200).send({
+                    data: {
+                        id_item: req.params.id_item,
+                        lokasiFile: webPath,
+                        msg: "upload image is success"
+                    }
+                })
+            } else {
+                const nameFileItem = new Date().getTime();
+                const pathFile = `img-items/${nameFileItem}.${req.file.mimetype.split("/")[1]}`;
+
+                if (imageOld !== pathFile) {
+                    let deleteImage = `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}`;
+                    fs.unlink(deleteImage, function (err) {
+                        if (err && err.code == 'ENOENT') {
+                            // file doens't exist
+                            console.info("File doesn't exist, won't remove it.");
+                        } else if (err) {
+                            // other errors, e.g. maybe we don't have enough permission
+                            console.error("Error occurred while trying to remove file");
+                        } else {
+                            console.info(`removed`);
+                        }
+                    });
+                }
+
+                const resultUpdate = await UpdateImageItemModel(pathFile, req.params.id_item);
+                const bucket = firebaseAdmin.storage().bucket();
+                const data = bucket.file(pathFile);
+                await data.save(req.file.buffer);
+                res.status(200).send({
+                    data: {
+                        path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
+                        msg: "upload image is success"
                     }
                 });
             }
-
-            const resultUpdate = await UpdateImageItemModel(webPath, req.params.id_item);
-
-            res.status(200).send({
-                data: {
-                    id_item: req.params.id_item,
-                    lokasiFile: webPath,
-                    msg: "upload image is success"
-                }
-            })
         } else {
             res.status(404).send({
                 msg: "id item not found"
