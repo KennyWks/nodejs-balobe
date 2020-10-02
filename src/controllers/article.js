@@ -17,13 +17,13 @@ exports.CreateArticleController = async (req, res) => {
     if (process.env.APP_ENV === 'development') {
       let webPath = req.file.path.replace(/\\/g, '/');
 
-      const data = {
+      const dataArticle = {
         id_category: req.body.id_category,
         name: req.body.name,
         description: req.body.description,
         image: webPath
       }
-      const resultQuery = await CreateArticleModel(data);
+      const resultQuery = await CreateArticleModel(dataArticle);
       console.log(resultQuery);
       if (resultQuery) {
         res.status(200).send({
@@ -39,13 +39,13 @@ exports.CreateArticleController = async (req, res) => {
       const nameFileArtile = new Date().getTime();
       const pathFile = `img-artilcles/${nameFileArtile}.${req.file.mimetype.split("/")[1]}`;
 
-      const data = {
+      const dataArticle = {
         id_category: req.body.id_category,
         name: req.body.name,
         description: req.body.description,
         image: pathFile
       }
-      const resultQuery = await CreateArticleModel(data);
+      const resultQuery = await CreateArticleModel(dataArticle);
 
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
