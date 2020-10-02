@@ -26,7 +26,7 @@ ItemRouter.delete("/:id", AuthPelapak, DeleteItemController);
 ItemRouter.patch("/updateItemImage/:id_item", AuthPelapak, UploadImageItem.single("image"), UpdateItemImageContoller);
 
 // routes for review items
-ItemRouter.get("/review/user/:id", Authentication, GetReviewByUserController);
+ItemRouter.get("/review/user", Authentication, GetReviewByUserController);
 ItemRouter.get("/review/:id", GetReviewByIdController);
 ItemRouter.get("/review/all/data", GetAllReviewController);
 ItemRouter.post("/review", Authentication, CreateReviewController);
