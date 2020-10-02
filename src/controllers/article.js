@@ -1,3 +1,5 @@
+require('dotenv').config();
+const firebaseAdmin = require("../config/firebase");
 const {
   CreateArticleModel,
   GetAllArticleModel,
@@ -8,30 +10,52 @@ const {
 
 exports.CreateArticleController = async (req, res) => {
   try {
-    console.log(req.body.id_category);
     if (!req.body.id_category || !req.body.name || !req.body.description) {
       throw new Error("your data articles can't be empty")
     }
-    let webPath = req.file.path.replace(/\\/g, '/');
 
-    const data = {
-      id_category: req.body.id_category,
-      name: req.body.name,
-      description: req.body.description,
-      image: webPath
-    }
+    if (process.env.APP_ENV === 'development') {
+      let webPath = req.file.path.replace(/\\/g, '/');
 
-    const resultQuery = await CreateArticleModel(data);
-    console.log(resultQuery);
-    if (resultQuery) {
+      const data = {
+        id_category: req.body.id_category,
+        name: req.body.name,
+        description: req.body.description,
+        image: webPath
+      }
+      const resultQuery = await CreateArticleModel(data);
+      console.log(resultQuery);
+      if (resultQuery) {
+        res.status(200).send({
+          data: {
+            id: resultQuery[1].insertId,
+            msg: "create article success"
+          },
+        });
+      } else {
+        throw new Error("create failed")
+      }
+    } else {
+      const nameFileArtile = new Date().getTime();
+      const pathFile = `img-artilcles/${nameFileArtile}.${req.file.mimetype.split("/")[1]}`;
+
+      const data = {
+        id_category: req.body.id_category,
+        name: req.body.name,
+        description: req.body.description,
+        image: pathFile
+      }
+      const resultQuery = await CreateArticleModel(data);
+
+      const bucket = firebaseAdmin.storage().bucket();
+      const data = bucket.file(pathFile);
+      await data.save(req.file.buffer);
       res.status(200).send({
         data: {
-          id: resultQuery[1].insertId,
-          msg: "create article success"
-        },
+          path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
+          msg: "upload image is success"
+        }
       });
-    } else {
-      throw new Error("create failed")
     }
   } catch (error) {
     console.log(error);
@@ -161,15 +185,32 @@ exports.UpdateArticleController = async (req, res) => {
     if (!Object.keys(dataUpdate).length > 0) {
       throw new Error("Please add data to update");
     }
-    let webPath = req.file.path.replace(/\\/g, '/');
-    const result = await UpdateArticleModel(req.params.id, dataUpdate, webPath);
-    console.log(result);
-    res.status(200).send({
-      data: {
-        id: req.params.id,
-        name: req.body.name
-      },
-    });
+
+    if (process.env.APP_ENV === 'development') {
+      let webPath = req.file.path.replace(/\\/g, '/');
+      const result = await UpdateArticleModel(req.params.id, dataUpdate, webPath);
+      res.status(200).send({
+        data: {
+          id: req.params.id,
+          name: req.body.name
+        },
+      });
+    } else {
+      const nameFileArtile = new Date().getTime();
+      const pathFile = `img-artilcles/${nameFileArtile}.${req.file.mimetype.split("/")[1]}`;
+
+      const result = await UpdateArticleModel(req.params.id, dataUpdate, pathFile);
+
+      const bucket = firebaseAdmin.storage().bucket();
+      const data = bucket.file(pathFile);
+      await data.save(req.file.buffer);
+      res.status(200).send({
+        data: {
+          path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
+          msg: "upload image is success"
+        }
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(202).send({
