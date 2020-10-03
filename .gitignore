@@ -4,6 +4,9 @@ uploads/
 
 .env
 
+desaign.txt
+
+sample desaign.txt
 
 logs
 *.log

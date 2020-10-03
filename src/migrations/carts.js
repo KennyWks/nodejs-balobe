@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS carts(
     id_user INT(11) UNSIGNED,
     id_item INT(11) UNSIGNED,
     name_item VARCHAR(100) NOT NULL,
-    total_item DECIMAL(11) NOT NULL,    
-    total_price DECIMAL(11) NOT NULL,    
+    total_item INT(11) NOT NULL,    
+    total_price INT(11) NOT NULL,    
     is_check_out INT(1) NOT NULL,    
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP
