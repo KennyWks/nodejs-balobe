@@ -36,8 +36,8 @@ exports.CreateArticleController = async (req, res) => {
         throw new Error("create failed")
       }
     } else {
-      const nameFileArtile = new Date().getTime();
-      const pathFile = `img-artilcles/${nameFileArtile}.${req.file.mimetype.split("/")[1]}`;
+      const nameFileArticle = new Date().getTime();
+      const pathFile = `img-articles/${nameFileArticle}.${req.file.mimetype.split("/")[1]}`;
 
       const dataArticle = {
         id_category: req.body.id_category,
@@ -116,7 +116,6 @@ exports.GetAllArticleController = async (req, res) => {
   }
 };
 
-
 exports.GetDetailArticleController = async (req, res) => {
   try {
     const result = await GetDetailArticleModel(req.params.id);
@@ -168,49 +167,77 @@ exports.DeleteArticleController = async (req, res) => {
   }
 };
 
-
 exports.UpdateArticleController = async (req, res) => {
   try {
     if (!Object.keys(req.body).length > 0) {
       throw new Error("Please add data to update");
     }
-    const dataUpdate = {};
-    const fillAble = ['id_category', 'name', 'description'];
-    fillAble.forEach((v) => {
-      if (req.body[v]) {
-        dataUpdate[v] = req.body[v];
-      }
-    });
 
-    if (!Object.keys(dataUpdate).length > 0) {
-      throw new Error("Please add data to update");
-    }
+    const result = await GetDetailArticleModel(req.params.id);
 
-    if (process.env.APP_ENV === 'development') {
-      let webPath = req.file.path.replace(/\\/g, '/');
-      const result = await UpdateArticleModel(req.params.id, dataUpdate, webPath);
-      res.status(200).send({
-        data: {
-          id: req.params.id,
-          name: req.body.name
-        },
-      });
-    } else {
-      const nameFileArtile = new Date().getTime();
-      const pathFile = `img-artilcles/${nameFileArtile}.${req.file.mimetype.split("/")[1]}`;
+    if (result[1][0]) {
+      oldPathImages = result[1][0].image;
 
-      const result = await UpdateArticleModel(req.params.id, dataUpdate, pathFile);
-
-      const bucket = firebaseAdmin.storage().bucket();
-      const data = bucket.file(pathFile);
-      await data.save(req.file.buffer);
-      res.status(200).send({
-        data: {
-          path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
-          msg: "upload image is success"
+      const dataUpdate = {};
+      const fillAble = ['id_category', 'name', 'description'];
+      fillAble.forEach((v) => {
+        if (req.body[v]) {
+          dataUpdate[v] = req.body[v];
         }
       });
+
+      if (!Object.keys(dataUpdate).length > 0) {
+        throw new Error("Please add data to update");
+      }
+
+      if (process.env.APP_ENV === 'development') {
+        let webPath = req.file.path.replace(/\\/g, '/');
+        const result = await UpdateArticleModel(req.params.id, dataUpdate, webPath);
+        res.status(200).send({
+          data: {
+            id: req.params.id,
+            name: req.body.name
+          },
+        });
+      } else {
+
+        let oldNameImages = oldPathImages.split("/")[1];
+        let newImagesOld = oldNameImages.split(".")[0];
+        let fileName = req.file.originalname.split(".")[0];
+
+        if (newImagesOld != fileName) {
+
+          const nameFileArticle = new Date().getTime();
+          const pathFile = `img-articles/${nameFileArticle}.${req.file.mimetype.split("/")[1]}`;
+
+          const result = await UpdateArticleModel(req.params.id, dataUpdate, pathFile);
+          const bucket = firebaseAdmin.storage().bucket();
+
+          //delete previous images
+          const deleteImage = bucket.file(oldPathImages);
+          await deleteImage.delete();
+
+          //save new image
+          const data = bucket.file(pathFile);
+          await data.save(req.file.buffer);
+          res.status(200).send({
+            data: {
+              path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
+              msg: "upload image is success"
+            }
+          });
+        } else {
+          res.status(200).send({
+            data: {
+              msg: "data is updated"
+            }
+          });
+        }
+      }
+    } else {
+      throw new Error(`item with id ${req.params.id} is not found`)
     }
+
   } catch (error) {
     console.log(error);
     res.status(202).send({

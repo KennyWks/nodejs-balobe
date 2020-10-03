@@ -221,13 +221,13 @@ exports.UpdateItemImageContoller = async (req, res) => {
     try {
         const resultGetData = await GetDataItem(req.params.id_item);
         if (resultGetData[1][0]) {
-            imageOld = resultGetData[1][0].image;
+            oldImages = resultGetData[1][0].image;
 
             if (process.env.APP_ENV === 'development') {
 
                 let webPath = req.file.path.replace(/\\/g, '/');
-                if (imageOld !== webPath) {
-                    let deleteImage = "./" + imageOld;
+                if (oldImages !== webPath) {
+                    let deleteImage = "./" + oldImages;
                     fs.unlink(deleteImage, function (err) {
                         if (err && err.code == 'ENOENT') {
                             // file doens't exist
@@ -254,24 +254,14 @@ exports.UpdateItemImageContoller = async (req, res) => {
                 const nameFileItem = new Date().getTime();
                 const pathFile = `img-items/${nameFileItem}.${req.file.mimetype.split("/")[1]}`;
 
-                if (imageOld !== pathFile) {
-                    let deleteImage = `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(imageOld)}`;
-                    console.log(deleteImage);
-                    fs.unlink(deleteImage, function (err) {
-                        if (err && err.code == 'ENOENT') {
-                            // file doens't exist
-                            console.info("File doesn't exist, won't remove it.");
-                        } else if (err) {
-                            // other errors, e.g. maybe we don't have enough permission
-                            console.error("Error occurred while trying to remove file");
-                        } else {
-                            console.info(`removed`);
-                        }
-                    });
-                }
-
                 const resultUpdate = await UpdateImageItemModel(pathFile, req.params.id_item);
                 const bucket = firebaseAdmin.storage().bucket();
+
+                //delete previous images
+                const deleteImage = bucket.file(oldImages);
+                await deleteImage.delete();
+
+                 //save new images
                 const data = bucket.file(pathFile);
                 await data.save(req.file.buffer);
                 res.status(200).send({

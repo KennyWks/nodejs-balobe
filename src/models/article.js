@@ -50,10 +50,6 @@ exports.GetDetailArticleModel = (id_article) => {
 
 exports.UpdateArticleModel = (id_article, body, path) => {
   return new Promise((resolve, reject) => {
-    runQuery(`SELECT * FROM articles WHERE id_article=${id_article}`, (err, result) => {
-      if (err || !result[1][0]) {
-        return reject(new Error(`article with id : ${id_article} not exists`));
-      }
       runQuery(`UPDATE articles SET ${Object.keys(body).map((v) => `${v} = '${body[v]}'`).join(",")} WHERE id_article=${id_article}`, (err, result) => {
         if (err) {
           return reject(new Error(err));
@@ -66,7 +62,6 @@ exports.UpdateArticleModel = (id_article, body, path) => {
         });
       });
     });
-  });
 }
 
 exports.DeleteArticleModel = (id_article) => {
