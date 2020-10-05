@@ -6,12 +6,16 @@ require('dotenv').config();
 const {
     GetUsernameSignupModel,
     GetIdUserModel,
-    GetVerifyCodeModel,
-    FinishConfirm,
+    GetVerifyCodeAccountModel,
+    GetVerifyCodePassModel,
+    FinishConfirmAccountModel,
+    ChangePasswordModel,
     UserModel,
     UserProfilesModel,
-    UserVC,
-    GetUserDataLoginModel
+    CreateVcForConfirmModel,
+    GetUserDataLoginModel,
+    GetEmailSignupModel,
+    CreateVcForForgetPassModel
 } = require("../models/auth");
 
 exports.SignupController = async (req, res) => {
@@ -23,6 +27,11 @@ exports.SignupController = async (req, res) => {
         const checkUsername = await GetUsernameSignupModel(req.body.username);
         if (checkUsername[1].length > 0) {
             throw new Error("Username is exists, try other username");
+        }
+
+        const checkEmail = await GetEmailSignupModel(req.body.email);
+        if (checkEmail[1].length > 0) {
+            throw new Error("Email is exists, try other email");
         }
 
         const hashPassword = bcrypt.hashSync(req.body.password);
@@ -49,9 +58,10 @@ exports.SignupController = async (req, res) => {
         const hashUsername = bcrypt.hashSync(req.body.username);
         const dataUserVC = {
             id_user: resultUser[1].insertId,
-            verify_code: hashUsername
+            verify_code: hashUsername,
+            vc_for: 1
         }
-        const resultUserVC = await UserVC(dataUserVC);
+        const resultUserVC = await CreateVcForConfirmModel(dataUserVC);
 
         //email firts line code
         const userGmail = 'desa.oelatimo@gmail.com';
@@ -70,7 +80,7 @@ exports.SignupController = async (req, res) => {
             from: userGmail,
             to: dataUserProfiles.email,
             subject: 'Confirm Account',
-            html: '<p>Klik this <a href="https://balobe.herokuapp.com/auth/confirm?id_user=' + id_user + '&verify_code=' + encodeURI(hashUsername) + '">link</a> for confirm</p>'
+            html: `<p>Klik this <a href="${process.env.APP_ENV === "development" ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/confirmAccount?id_user=${id_user}&verify_code=${encodeURI(hashUsername)}">link</a> for confirm</p>`
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
@@ -92,9 +102,8 @@ exports.SignupController = async (req, res) => {
     }
 }
 
-exports.ConfirmController = async (req, res) => {
+exports.ConfirmAccountController = async (req, res) => {
     try {
-
         if (!req.query.id_user || !req.query.verify_code) {
             throw new Error("your link is not valid")
         }
@@ -102,10 +111,10 @@ exports.ConfirmController = async (req, res) => {
         const id_user = await GetIdUserModel(req.query.id_user);
         if (id_user[1].length > 0) {
 
-            const verifyCode = await GetVerifyCodeModel(req.query.verify_code);
+            const verifyCode = await GetVerifyCodeAccountModel(req.query.verify_code);
             if (verifyCode[1].length > 0) {
 
-                const result1 = await FinishConfirm(req.query.id_user);
+                const result1 = await FinishConfirmAccountModel(req.query.id_user);
                 console.log(result1);
                 res.status(200).send({
                     data: {
@@ -166,6 +175,125 @@ exports.LoginController = async (req, res) => {
         } else {
             throw new Error("your akun is not defined");
         }
+    } catch (error) {
+        console.log(error);
+        res.status(202).send({
+            error: {
+                msg: error.message || "something wrong!"
+            },
+        });
+    }
+}
+
+exports.ForgotPassController = async (req, res) => {
+    try {
+        if (!req.body.email) {
+            throw new Error("email is required")
+        }
+
+        const checkEmail = await GetEmailSignupModel(req.body.email);
+        if (checkEmail[1].length > 0) {
+            const hashEmail = bcrypt.hashSync(checkEmail[1][0].email);
+            const dataUserVC = {
+                id_user: checkEmail[1][0].id_user,
+                verify_code: hashEmail,
+                vc_for: 2
+            }
+            const result = await CreateVcForForgetPassModel(dataUserVC);
+
+            //email firts line code
+            const userGmail = 'desa.oelatimo@gmail.com';
+            const passGmail = 'Oelatimo123';
+
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: userGmail,
+                    pass: passGmail
+                }
+            });
+
+            const id_user = checkEmail[1][0].id_user;
+            const mailOptions = {
+                from: userGmail,
+                to: req.body.email,
+                subject: 'Change Password',
+                html: `<p>Klik this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/confirmPass?id_user=${id_user}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
+            };
+
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) throw err;
+                console.log('Email sent: ' + info.response);
+            });
+            //email last line code
+
+            res.status(200).send({
+                data: {
+                    msg: "please check your email for link change password"
+                }
+            });
+        } else {
+            throw new Error("Your email is not exists in database");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(202).send({
+            error: {
+                msg: error.message || "something wrong!"
+            },
+        });
+    }
+}
+
+exports.ConfirmPassController = async (req, res) => {
+    try {
+        if (!req.query.id_user || !req.query.verify_code) {
+            throw new Error("your link is not valid")
+        }
+
+        const result = await GetIdUserModel(req.query.id_user);
+        if (result[1].length > 0) {
+
+            const verifyCode = await GetVerifyCodePassModel(req.query.verify_code);
+            if (verifyCode[1].length > 0) {
+                const id_user = req.query.id_user;
+                res.status(200).send({
+                    data: {
+                        link: `${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/updatePass/${id_user}`
+                    }
+                });
+
+            } else {
+                throw new Error("your verify code is invalid");
+            }
+        } else {
+            throw new Error("your akun is defined");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(202).send({
+            error: {
+                msg: error.message || "something wrong!"
+            },
+        });
+    }
+}
+
+exports.ChangePasswordController = async (req, res) => {
+    try {
+
+        if (!req.body.password) {
+            throw new Error("please input your new password")
+        }
+
+        const hashPassword = bcrypt.hashSync(req.body.password);
+        const result = await ChangePasswordModel(req.params.id, hashPassword);
+        res.status(200).send({
+            data: {
+                msg: "You password is updated"
+            }
+        });
+
     } catch (error) {
         console.log(error);
         res.status(202).send({

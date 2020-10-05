@@ -15,6 +15,18 @@ SELECT * FROM users WHERE username='${username}'`, (err, result) => {
     });
 };
 
+exports.GetEmailSignupModel = (email) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`
+SELECT * FROM user_profiles WHERE email='${email}'`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            return resolve(result);
+        });
+    });
+};
+
 // model for check username from user vc
 exports.GetIdUserModel = (id_user) => {
     return new Promise((resolve, reject) => {
@@ -28,11 +40,24 @@ SELECT * FROM user_vc WHERE id_user='${id_user}'`, (err, result) => {
     });
 };
 
-// model for check verify code from user vc
-exports.GetVerifyCodeModel = (verifyCode) => {
+// model for check verify code for acoount from user vc
+exports.GetVerifyCodeAccountModel = (verifyCode) => {
     return new Promise((resolve, reject) => {
         runQuery(`
-SELECT * FROM user_vc WHERE verify_code='${verifyCode}'`, (err, result) => {
+SELECT * FROM user_vc WHERE verify_code='${verifyCode}' AND vc_for=1`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            return resolve(result);
+        });
+    });
+};
+
+// model for check verify code for change password from user vc
+exports.GetVerifyCodePassModel = (verifyCode) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`
+SELECT * FROM user_vc WHERE verify_code='${verifyCode}' AND vc_for=2`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
@@ -43,13 +68,29 @@ SELECT * FROM user_vc WHERE verify_code='${verifyCode}'`, (err, result) => {
 
 //delete data user in table verify code
 //update data status user in table user
-exports.FinishConfirm = (id_user) => {
+exports.FinishConfirmAccountModel = (id_user) => {
     return new Promise((resolve, reject) => {
-        runQuery(`DELETE FROM user_vc WHERE id_user=${id_user}`, (err, result) => {
+        runQuery(`DELETE FROM user_vc WHERE id_user=${id_user} AND vc_for=1`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
             runQuery(`UPDATE users SET status=1 WHERE id_user=${id_user}`, (err, result) => {
+                if (err) {
+                    return reject(new Error(err));
+                }
+                return resolve(result);
+            });
+        });
+    });
+}
+
+exports.ChangePasswordModel = (id_user, hashPassword) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`DELETE FROM user_vc WHERE id_user=${id_user} AND vc_for=2`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            runQuery(`UPDATE users SET password='${hashPassword}' WHERE id_user=${id_user}`, (err, result) => {
                 if (err) {
                     return reject(new Error(err));
                 }
@@ -85,11 +126,24 @@ INSERT INTO user_profiles(id_user,fullname,gender,picture,address,email,phone,ba
     });
 };
 
-//insert data for table verify code
-exports.UserVC = (dataUserVC) => {
+//insert data for table verify code (confirm account)
+exports.CreateVcForConfirmModel = (dataUserVC) => {
     return new Promise((resolve, reject) => {
         runQuery(`
-INSERT INTO user_vc(id_user,verify_code) values('${dataUserVC.id_user}', '${dataUserVC.verify_code}')`, (err, result) => {
+INSERT INTO user_vc(id_user,verify_code,vc_for) values('${dataUserVC.id_user}', '${dataUserVC.verify_code}', '${dataUserVC.vc_for}')`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            return resolve(result);
+        });
+    });
+};
+
+//insert data for table verify code (forgot password)
+exports.CreateVcForForgetPassModel = (dataUserVC) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`
+INSERT INTO user_vc(id_user,verify_code,vc_for) values('${dataUserVC.id_user}', '${dataUserVC.verify_code}', '${dataUserVC.vc_for}')`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
