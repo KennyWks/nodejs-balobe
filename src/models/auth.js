@@ -106,7 +106,7 @@ exports.FinishConfirmAccountModel = (id_user) => {
     });
 }
 
-exports.ExpiredLinkUpdatePassModel = () => {
+exports.ExpiredLinkUpdatePassModel = (id_user) => {
     return new Promise((resolve, reject) => {
         runQuery(`DELETE FROM user_vc WHERE id_user=${id_user} AND vc_for=2`, (err, result) => {
             if (err) {
