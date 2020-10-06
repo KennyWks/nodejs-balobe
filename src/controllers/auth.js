@@ -207,6 +207,7 @@ exports.ForgotPassController = async (req, res) => {
         const checkEmail = await GetEmailSignupModel(req.body.email);
         if (checkEmail[1].length > 0) {
             if (checkEmail[1][0].status === 1) {
+                
                 const hashEmail = bcrypt.hashSync(checkEmail[1][0].email);
                 const dataUserVC = {
                     id_user: checkEmail[1][0].id_user,
