@@ -10,6 +10,7 @@ const {
     GetVerifyCodePassModel,
     FinishConfirmAccountModel,
     ExpiredLinkConfirmAccoutModel,
+    ExpiredLinkUpdatePassModel,
     ChangePasswordModel,
     UserModel,
     UserProfilesModel,
@@ -287,7 +288,7 @@ exports.ConfirmPassController = async (req, res) => {
                         }
                     });
                 } else {
-                    // const result2 = await ExpiredLinkUpdatePassModel(req.query.id_user);
+                    const delExpiredPassLink = await ExpiredLinkUpdatePassModel(req.query.id_user);
                     throw new Error("your link is expired");
                 }
             } else {
