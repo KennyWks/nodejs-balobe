@@ -18,7 +18,7 @@ SELECT * FROM users WHERE username='${username}'`, (err, result) => {
 exports.GetEmailSignupModel = (email) => {
     return new Promise((resolve, reject) => {
         runQuery(`
-SELECT * FROM user_profiles WHERE email='${email}'`, (err, result) => {
+        SELECT users.*, user_profiles.* FROM users JOIN user_profiles ON users.id_user = user_profiles.id_user WHERE user_profiles.email = '${email}'`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
@@ -52,6 +52,23 @@ SELECT * FROM user_vc WHERE verify_code='${verifyCode}' AND vc_for=1`, (err, res
         });
     });
 };
+
+// model for delete data from table users & user_vc if link is expired
+exports.ExpiredLinkConfirmAccoutModel = (id_user) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`DELETE FROM user_vc WHERE id_user=${id_user} AND vc_for=1`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            runQuery(`DELETE FROM users WHERE id_user=${id_user}`, (err, result) => {
+                if (err) {
+                    return reject(new Error(err));
+                }
+                return resolve(result);
+            });
+        });
+    });
+}
 
 // model for check verify code for change password from user vc
 exports.GetVerifyCodePassModel = (verifyCode) => {

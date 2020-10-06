@@ -9,6 +9,7 @@ const {
     GetVerifyCodeAccountModel,
     GetVerifyCodePassModel,
     FinishConfirmAccountModel,
+    ExpiredLinkConfirmAccoutModel,
     ChangePasswordModel,
     UserModel,
     UserProfilesModel,
@@ -108,25 +109,36 @@ exports.ConfirmAccountController = async (req, res) => {
             throw new Error("your link is not valid")
         }
 
+        //cehck id_user is empty or not
         const id_user = await GetIdUserModel(req.query.id_user);
         if (id_user[1].length > 0) {
 
+            // check verify code is not empty and vc_for = 1
             const verifyCode = await GetVerifyCodeAccountModel(req.query.verify_code);
             if (verifyCode[1].length > 0) {
 
-                const result1 = await FinishConfirmAccountModel(req.query.id_user);
-                console.log(result1);
-                res.status(200).send({
-                    data: {
-                        msg: "confirm is successfully"
-                    }
-                });
+                let createdDate = Date.parse(verifyCode[1][0].created_at);
+                let today = new Date();
 
+                const limitDateConfirm = 172800000; // two day in int
+
+                // check link is expired or not
+                if ((today.getTime() - createdDate) < limitDateConfirm) {
+                    const result1 = await FinishConfirmAccountModel(req.query.id_user);
+                    res.status(200).send({
+                        data: {
+                            msg: "your account is confirm"
+                        }
+                    });
+                } else {
+                    const result2 = await ExpiredLinkConfirmAccoutModel(req.query.id_user);
+                    throw new Error("your link is expired");
+                }
             } else {
                 throw new Error("your verify code is invalid");
             }
         } else {
-            throw new Error("your username is invalid");
+            throw new Error("your akun is not defined");
         }
     } catch (error) {
         console.log(error);
@@ -193,45 +205,49 @@ exports.ForgotPassController = async (req, res) => {
 
         const checkEmail = await GetEmailSignupModel(req.body.email);
         if (checkEmail[1].length > 0) {
-            const hashEmail = bcrypt.hashSync(checkEmail[1][0].email);
-            const dataUserVC = {
-                id_user: checkEmail[1][0].id_user,
-                verify_code: hashEmail,
-                vc_for: 2
+            if (checkEmail[1][0].status === 1) {
+                const hashEmail = bcrypt.hashSync(checkEmail[1][0].email);
+                const dataUserVC = {
+                    id_user: checkEmail[1][0].id_user,
+                    verify_code: hashEmail,
+                    vc_for: 2
+                }
+                const result = await CreateVcForForgetPassModel(dataUserVC);
+
+                //email firts line code
+                const userGmail = 'desa.oelatimo@gmail.com';
+                const passGmail = 'Oelatimo123';
+
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: userGmail,
+                        pass: passGmail
+                    }
+                });
+
+                const id_user = checkEmail[1][0].id_user;
+                const mailOptions = {
+                    from: userGmail,
+                    to: req.body.email,
+                    subject: 'Change Password',
+                    html: `<p>Klik this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/confirmPass?id_user=${id_user}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
+                };
+
+                transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) throw err;
+                    console.log('Email sent: ' + info.response);
+                });
+                //email last line code
+
+                res.status(200).send({
+                    data: {
+                        msg: "please check your email for link change password"
+                    }
+                });
+            } else {
+                throw new Error("Your account is not activate");
             }
-            const result = await CreateVcForForgetPassModel(dataUserVC);
-
-            //email firts line code
-            const userGmail = 'desa.oelatimo@gmail.com';
-            const passGmail = 'Oelatimo123';
-
-            const transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: userGmail,
-                    pass: passGmail
-                }
-            });
-
-            const id_user = checkEmail[1][0].id_user;
-            const mailOptions = {
-                from: userGmail,
-                to: req.body.email,
-                subject: 'Change Password',
-                html: `<p>Klik this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/confirmPass?id_user=${id_user}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
-            };
-
-            transporter.sendMail(mailOptions, (err, info) => {
-                if (err) throw err;
-                console.log('Email sent: ' + info.response);
-            });
-            //email last line code
-
-            res.status(200).send({
-                data: {
-                    msg: "please check your email for link change password"
-                }
-            });
         } else {
             throw new Error("Your email is not exists in database");
         }
@@ -248,21 +264,32 @@ exports.ForgotPassController = async (req, res) => {
 exports.ConfirmPassController = async (req, res) => {
     try {
         if (!req.query.id_user || !req.query.verify_code) {
-            throw new Error("your link is not valid")
+            throw new Error("your link is invalid")
         }
 
         const result = await GetIdUserModel(req.query.id_user);
         if (result[1].length > 0) {
 
             const verifyCode = await GetVerifyCodePassModel(req.query.verify_code);
-            if (verifyCode[1].length > 0) {
-                const id_user = req.query.id_user;
-                res.status(200).send({
-                    data: {
-                        link: `${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/updatePass/${id_user}`
-                    }
-                });
 
+            if (verifyCode[1].length > 0) {
+
+                let createdDate = Date.parse(verifyCode[1][0].created_at);
+                let today = new Date();
+
+                const limitDateConfirm = 172800000; // two day in int
+
+                // check link is expired or not
+                if ((today.getTime() - createdDate) < limitDateConfirm) {
+                    res.status(200).send({
+                        data: {
+                            link: `${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/updatePass/${req.query.id_user}`
+                        }
+                    });
+                } else {
+                    // const result2 = await ExpiredLinkUpdatePassModel(req.query.id_user);
+                    throw new Error("your link is expired");
+                }
             } else {
                 throw new Error("your verify code is invalid");
             }
