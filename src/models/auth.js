@@ -60,11 +60,11 @@ exports.ExpiredLinkConfirmAccoutModel = (id_user) => {
             if (err) {
                 return reject(new Error(err));
             }
-            runQuery(`DELETE FROM users WHERE id_user=${id_user}`, (err, result) => {
+            runQuery(`DELETE FROM user_profiles WHERE id_user=${id_user}`, (err, result) => {
                 if (err) {
                     return reject(new Error(err));
                 }
-                runQuery(`DELETE FROM user_profiles WHERE id_user=${id_user}`, (err, result) => {
+                runQuery(`DELETE FROM users WHERE id_user=${id_user}`, (err, result) => {
                     if (err) {
                         return reject(new Error(err));
                     }
