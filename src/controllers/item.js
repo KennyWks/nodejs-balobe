@@ -48,7 +48,6 @@ exports.CreateItemController = async (req, res) => {
         } else {
             const nameFileItem = new Date().getTime();
             const pathFile = `img-items/${nameFileItem}.${req.file.mimetype.split("/")[1]}`;
-            console.log(req.file.mimetype);
 
             const dataItems = {
                 id_pelapak: req.body.id_pelapak,
