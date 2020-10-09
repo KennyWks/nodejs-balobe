@@ -92,7 +92,7 @@ exports.SignupController = async (req, res) => {
         //email last line code
 
         res.status(201).send({
-            msg: "Your akun is succesfully registered"
+            msg: "Your account is succesfully registered"
         });
     } catch (error) {
         console.log(error);
@@ -139,7 +139,7 @@ exports.ConfirmAccountController = async (req, res) => {
                 throw new Error("your verify code is invalid");
             }
         } else {
-            throw new Error("your akun is not defined");
+            throw new Error("your account is not defined");
         }
     } catch (error) {
         console.log(error);
@@ -186,7 +186,7 @@ exports.LoginController = async (req, res) => {
                 throw new Error("your account is not activate");
             }
         } else {
-            throw new Error("your akun is not defined");
+            throw new Error("your account is not defined");
         }
     } catch (error) {
         console.log(error);
@@ -296,7 +296,7 @@ exports.ConfirmPassController = async (req, res) => {
                 throw new Error("your verify code is invalid");
             }
         } else {
-            throw new Error("your akun is defined");
+            throw new Error("your account is defined");
         }
     } catch (error) {
         console.log(error);

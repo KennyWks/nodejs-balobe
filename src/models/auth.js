@@ -40,7 +40,7 @@ SELECT * FROM user_vc WHERE id_user='${id_user}'`, (err, result) => {
     });
 };
 
-// model for check verify code for acoount from user vc
+// model for check verify code for account from user vc
 exports.GetVerifyCodeAccountModel = (verifyCode) => {
     return new Promise((resolve, reject) => {
         runQuery(`
