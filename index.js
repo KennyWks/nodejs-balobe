@@ -4,10 +4,14 @@ const app = express();
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require("cors");
 require('dotenv').config();
 
 //Logger
 app.use(morgan("tiny"));
+
+//cors
+app.use(cors());
 
 //BodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
