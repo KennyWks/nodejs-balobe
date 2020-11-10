@@ -39,7 +39,7 @@ exports.GetAllItemModel = (params) => {
 
 exports.GetDetailItemModel = (id_item) => {
     return new Promise((resolve, reject) => {
-        runQuery(`SELECT * FROM items WHERE id_item=${id_item}`, (err, result) => {
+        runQuery('SELECT * FROM items JOIN category ON `items`.`id_category` = `category`.`id_category` WHERE id_item = ' +id_item, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
