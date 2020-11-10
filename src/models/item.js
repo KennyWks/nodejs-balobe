@@ -39,7 +39,7 @@ exports.GetAllItemModel = (params) => {
 
 exports.GetDetailItemModel = (id_item) => {
     return new Promise((resolve, reject) => {
-        runQuery('SELECT * FROM items JOIN category ON `items`.`id_category` = `category`.`id_category` WHERE id_item = ' +id_item, (err, result) => {
+        runQuery('SELECT `items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name` as name_product, `items`.`price`, `items`.`quantity`, `items`.`description`, `items`.`image`, `items`.`created_at`, `items`.`updated_at`, `category`.`hs_code`, `category`.`name` as name_category FROM items JOIN category ON `items`.`id_category` = `category`.`id_category` WHERE id_item = ' +id_item, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
