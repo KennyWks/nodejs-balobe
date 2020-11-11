@@ -14,7 +14,8 @@ const {
     UpdateReviewController,
     GetReviewByUserController,
     GetReviewByIdController,
-    GetAllReviewController
+    GetAllReviewController,
+    GetReviewByIdItemController
 } = require("../controllers/item");
 
 // routes for items
@@ -28,6 +29,7 @@ ItemRouter.patch("/updateItemImage/:id_item", AuthPelapak, UploadImageItem.singl
 // routes for review items
 ItemRouter.get("/review/user", Authentication, GetReviewByUserController);
 ItemRouter.get("/review/:id", GetReviewByIdController);
+ItemRouter.get("/review/item/:id", GetReviewByIdItemController);
 ItemRouter.get("/review/all/data", GetAllReviewController);
 ItemRouter.post("/review", Authentication, CreateReviewController);
 ItemRouter.patch("/review/:id", Authentication, UpdateReviewController);

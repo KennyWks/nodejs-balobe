@@ -153,6 +153,17 @@ exports.GetReviewByIdModel = (id) => {
     });
 }
 
+exports.GetReviewByIdItemModel = (id_item) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`SELECT * FROM items_review WHERE id_item=${id_item}`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            return resolve(result);
+        });
+    });
+}
+
 exports.GetAllReviewModel = (params) => {
     return new Promise((resolve, reject) => {
         const {

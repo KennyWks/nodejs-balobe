@@ -12,7 +12,8 @@ const {
     UpdateReviewItemModel,
     GetReviewByUserModel,
     GetReviewByIdModel,
-    GetAllReviewModel
+    GetAllReviewModel,
+    GetReviewByIdItemModel
 } = require("../models/item");
 
 // controller for controller items
@@ -453,4 +454,28 @@ exports.GetAllReviewController = async (req, res) => {
         });
     }
 };
+
+exports.GetReviewByIdItemController = async (req, res) => {
+    try {
+        console.log(req.params.id);
+        const result = await GetReviewByIdItemModel(req.params.id);
+        if (result[1][0]) {
+            res.status(200).send({
+                data: result[1][0],
+            });
+        } else {
+            res.status(404).send({
+                msg: "id item not found"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(404).send({
+            error: {
+                msg: error.message || "something wrong",
+            },
+        });
+    }
+};
+
 //end line code for controller items review
