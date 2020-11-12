@@ -1,8 +1,8 @@
-var rp = require('request-promise');
+const rp = require('request-promise');
 
 exports.GetAllProvincesData = (req, res) => {
 
-    var options = {
+    const options = {
         uri: 'https://api.rajaongkir.com/starter/province',
         qs: {id: `${req.params.id ? req.params.id : ''}`},
         headers: {key: '96ac5b6cdb274fd84c01ec9ed3ff1bca'},
@@ -11,7 +11,7 @@ exports.GetAllProvincesData = (req, res) => {
      
     rp(options)
         .then(function (repos) {
-            console.log('User has %d repos', repos.length);
+            // console.log('User has %d repos', repos.length);
             res.status(200).send({
                     data: repos
             });
@@ -23,7 +23,7 @@ exports.GetAllProvincesData = (req, res) => {
 
 exports.GetAllCityData = (req, res) => {
 
-    var options = {
+    const options = {
         uri: 'https://api.rajaongkir.com/starter/city',
         qs: {id: `${req.params.id ? req.params.id : ''}`},
         headers: {key: '96ac5b6cdb274fd84c01ec9ed3ff1bca'},
@@ -32,7 +32,7 @@ exports.GetAllCityData = (req, res) => {
      
     rp(options)
         .then(function (repos) {
-            console.log('User has %d repos', repos.length);
+            // console.log('User has %d repos', repos.length);
             res.status(200).send({
                     data: repos
             });
