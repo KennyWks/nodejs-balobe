@@ -30,6 +30,7 @@ const RoleRouter = require("./src/routes/role");
 const PelapakRouter = require("./src/routes/pelapak");
 const ItemRouter = require("./src/routes/item");
 const CartsRouter = require("./src/routes/carts");
+const Api = require("./src/routes/api");
 
 app.get("/", (req, res)=>{
   res.status(200).send({
@@ -45,6 +46,7 @@ app.use("/role", RoleRouter);
 app.use("/pelapak", PelapakRouter);
 app.use("/item", ItemRouter);
 app.use("/carts", CartsRouter);
+app.use("/api", Api);
 
 app.use((req, res, next) => {
   const error = new Error("Not Found");
