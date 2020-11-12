@@ -14,6 +14,9 @@ exports.GetAllProvincesData = (req, res) => {
     rp(options)
         .then(function (repos) {
             console.log('User has %d repos', repos.length);
+            res.status(200).send({
+                    data: repos
+            });
         })
         .catch(function (err) {
             // API call failed...
