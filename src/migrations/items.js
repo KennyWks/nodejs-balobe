@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS items(
     name VARCHAR(100) NOT NULL,
     price INT(11) NOT NULL,
     quantity INT(11) NOT NULL,
+    weight INT(11) NOT NULL,
     description TEXT,
     image TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
