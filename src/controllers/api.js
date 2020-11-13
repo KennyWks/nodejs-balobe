@@ -6,7 +6,7 @@ exports.GetCostData = (req, res) => {
         method: 'POST',
         url: 'https://api.rajaongkir.com/starter/cost',
         headers: {key: '96ac5b6cdb274fd84c01ec9ed3ff1bca', 'content-type': 'application/x-www-form-urlencoded'},
-        form: {origin: req.body.form.origin, destination: req.body.form.destination, weight: req.body.form.weight, courier: req.body.form.courier}
+        form: {origin: req.body.origin, destination: req.body.destination, weight: req.body.weight, courier: req.body.courier}
     };
      
     rp(options)
@@ -40,3 +40,4 @@ exports.GetAllCityData = (req, res) => {
             console.log(err);
         });
 };
+
