@@ -1,10 +1,10 @@
 const ApiRouter = require("express").Router();
 const {
-    GetAllProvincesData,
+    GetCostData,
     GetAllCityData
 } = require("../controllers/api");
 
-ApiRouter.get("/rajaongkir/province", GetAllProvincesData);
+ApiRouter.get("/rajaongkir/cost", GetCostData);
 // ApiRouter.get("/rajaongkir/province/:id", GetAllProvincesData);
 ApiRouter.get("/rajaongkir/city", GetAllCityData);
 
