@@ -4,7 +4,7 @@ const {
     GetAllCityData
 } = require("../controllers/api");
 
-ApiRouter.get("/rajaongkir/cost", GetCostData);
+ApiRouter.post("/rajaongkir/cost", GetCostData);
 // ApiRouter.get("/rajaongkir/province/:id", GetAllProvincesData);
 ApiRouter.get("/rajaongkir/city", GetAllCityData);
 
