@@ -133,8 +133,8 @@ exports.GetAllItemController = async (req, res) => {
 exports.GetDetailItemController = async (req, res) => {
     try {
         const result = await GetDetailItemModel(req.params.id);
-        console.log(result);
-        console.log(req.params.id);
+        // console.log(result);
+        // console.log(req.params.id);
         if (result[1][0]) {
             res.status(200).send({
                 data: result[1][0],

@@ -26,8 +26,8 @@ exports.GetAllItemModel = (params) => {
         ${search ? `WHERE name LIKE '%${search}%'` : ""}
         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : "" } LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
         runQuery(`
-        SELECT COUNT(*) AS total FROM items ${condition.substring(0,  condition.indexOf("LIMIT"))};
-        SELECT * FROM items ${condition}
+        SELECT COUNT(*) AS total FROM items FULL OUTER JOIN items_review ON items.id_item=items_review.id_item ${condition.substring(0,  condition.indexOf("LIMIT"))};
+        SELECT * FROM items FULL OUTER JOIN items_review ON items.id_item=items_review.id_item ${condition}
         `, (err, result) => {
             if (err) {
                 return reject(new Error(err));
