@@ -29,7 +29,7 @@ exports.GetAllItemModel = (params) => {
         ${search ? `WHERE name LIKE '%${search}%'` : ""}
         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : "" } LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
         runQuery(`
-        SELECT COUNT(*) AS total FROM items LEFT JOIN items_review ON ${join} UNION SELECT ${all} FROM items RIGHT JOIN items_review ON ${join} ${condition.substring(0,  condition.indexOf("LIMIT"))};
+        SELECT COUNT(*) AS total FROM items ${condition.substring(0,  condition.indexOf("LIMIT"))};
         SELECT ${all} FROM items LEFT JOIN items_review ON ${join} UNION SELECT ${all} FROM items RIGHT JOIN items_review ON ${join} ${condition}
         `, (err, result) => {
             if (err) {
