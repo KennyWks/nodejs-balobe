@@ -10,12 +10,14 @@ const AuthAdmin = require("../middleware/auth_admin");
 
 const {
     GetAllUserController,
+    GetUserController,
     UpdateImageProfileUserContoller,
     UpdateProfileUserContoller
 } = require("../controllers/user");
 
 //get all data user by admin
 UserRouter.get('/all', AuthAdmin, GetAllUserController);
+UserRouter.get('/user/:id', GetUserController);
 
 // buyer routes
 UserRouter.patch('/updateImageProfileBuyer', Authentication, UploadFileImageUser.single("image"), UpdateImageProfileUserContoller);

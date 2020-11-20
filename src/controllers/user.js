@@ -4,6 +4,7 @@ const fs = require("fs");
 const {
     UpdateImageProfileUserModel,
     UpdateProfileUserModel,
+    GetDataUserProfiles,
     GetDataUser,
     GetAllUserModel
 } = require("../models/user");
@@ -12,8 +13,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
     try {
 
         if (process.env.APP_ENV === 'development') {
-            const resultGetData = await GetDataUser(req.auth.id_user);
-
+            const resultGetData = await GetDataUserProfiles(req.auth.id_user);
             imageOld = resultGetData[1][0].picture;
 
             let webPath = req.file.path.replace(/\\/g, '/');
@@ -94,6 +94,30 @@ exports.UpdateProfileUserContoller = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(202).send({
+            error: {
+                msg: error.message || "something wrong",
+            },
+        });
+    }
+};
+
+exports.GetUserController = async (req, res) => {
+    try {
+        const result = await GetDataUser(req.params.id);
+        // console.log(result);
+        // console.log(req.params.id);
+        if (result[1][0]) {
+            res.status(200).send({
+                data: result[1][0],
+            });
+        } else {
+            res.status(404).send({
+                msg: "id item not found"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong",
             },

@@ -13,9 +13,20 @@ exports.UpdateImageProfileUserModel = (path, id_user) => {
     });
 }
 
-exports.GetDataUser = (id_user) => {
+exports.GetDataUserProfiles = (id_user) => {
     return new Promise((resolve, reject) => {
         runQuery(`SELECT * FROM user_profiles WHERE id_user=${id_user}`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            return resolve(result);
+        });
+    });
+}
+
+exports.GetDataUser = (id_user) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`SELECT * FROM user WHERE id_user=${id_user}`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
