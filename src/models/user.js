@@ -26,7 +26,7 @@ exports.GetDataUserProfiles = (id_user) => {
 
 exports.GetDataUser = (id_user) => {
     return new Promise((resolve, reject) => {
-        runQuery(`SELECT username FROM users WHERE id_user=${id_user} AND role_id <> 2`, (err, result) => {
+        runQuery(`SELECT * FROM users WHERE id_user=${id_user} AND role_id <> 2`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }

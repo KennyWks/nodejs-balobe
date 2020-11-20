@@ -158,7 +158,7 @@ exports.GetReviewByIdModel = (id) => {
 
 exports.GetReviewByIdItemModel = (id_item) => {
     return new Promise((resolve, reject) => {
-        runQuery(`SELECT * FROM items_review WHERE id_item=${id_item}`, (err, result) => {
+        runQuery(`SELECT items_review.*, users.username FROM items_review JOIN users ON items_review.id_user = users.id_user WHERE id_item=${id_item}`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
