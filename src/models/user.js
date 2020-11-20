@@ -24,17 +24,6 @@ exports.GetDataUserProfiles = (id_user) => {
     });
 }
 
-exports.GetDataUser = (id_user) => {
-    return new Promise((resolve, reject) => {
-        runQuery(`SELECT * FROM users WHERE id_user=${id_user} AND role_id <> 2`, (err, result) => {
-            if (err) {
-                return reject(new Error(err));
-            }
-            return resolve(result);
-        });
-    });
-}
-
 exports.UpdateProfileUserModel = (id_user, body) => {
     return new Promise((resolve, reject) => {
         runQuery(`UPDATE user_profiles SET ${Object.keys(body).map((v) => `${v} = '${body[v]}'`).join(",")} WHERE id_user=${id_user}`, (err, result) => {

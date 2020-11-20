@@ -5,7 +5,6 @@ const {
     UpdateImageProfileUserModel,
     UpdateProfileUserModel,
     GetDataUserProfiles,
-    GetDataUser,
     GetAllUserModel
 } = require("../models/user");
 
@@ -103,7 +102,7 @@ exports.UpdateProfileUserContoller = async (req, res) => {
 
 exports.GetUserController = async (req, res) => {
     try {
-        const result = await GetDataUser(req.params.id);
+        const result = await GetDataUserProfiles(req.params.id);
         // console.log(req.params.id);
         if (result[1][0]) {
             res.status(200).send({
