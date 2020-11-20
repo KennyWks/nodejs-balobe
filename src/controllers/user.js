@@ -112,7 +112,7 @@ exports.GetUserController = async (req, res) => {
             });
         } else {
             res.status(404).send({
-                msg: "id item not found"
+                msg: "id user not found"
             });
         }
     } catch (error) {
