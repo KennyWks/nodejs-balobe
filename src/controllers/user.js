@@ -104,7 +104,6 @@ exports.UpdateProfileUserContoller = async (req, res) => {
 exports.GetUserController = async (req, res) => {
     try {
         const result = await GetDataUser(req.params.id);
-        // console.log(result);
         // console.log(req.params.id);
         if (result[1][0]) {
             res.status(200).send({

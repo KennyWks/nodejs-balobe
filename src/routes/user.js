@@ -17,6 +17,7 @@ const {
 
 //get all data user by admin
 UserRouter.get('/all', AuthAdmin, GetAllUserController);
+
 UserRouter.get('/user/:id', GetUserController);
 
 // buyer routes
