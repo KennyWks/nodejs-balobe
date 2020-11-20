@@ -133,7 +133,7 @@ exports.GetAllItemController = async (req, res) => {
 exports.GetDetailItemController = async (req, res) => {
     try {
         const result = await GetDetailItemModel(req.params.id);
-        // console.log(result);
+        console.log(result);
         // console.log(req.params.id);
         if (result[1][0]) {
             res.status(200).send({
@@ -147,7 +147,7 @@ exports.GetDetailItemController = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(404).send({
-            error: {GetReviewByIdItemController
+            error: {
                 msg: error.message || "something wrong",
             },
         });
