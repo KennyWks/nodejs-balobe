@@ -362,8 +362,9 @@ exports.UpdateReviewController = async (req, res) => {
 
 exports.GetReviewByUserController = async (req, res) => {
     try {
-        console.log(req.auth.id_user);
+        // console.log(req.auth.id_user);
         const result = await GetReviewByUserModel(req.auth.id_user);
+        console.log(result);
         if (result[1][0]) {
             res.status(200).send({
                 data: result[1][0],
