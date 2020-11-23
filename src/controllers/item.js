@@ -460,6 +460,7 @@ exports.GetReviewByIdItemController = async (req, res) => {
     try {
         // console.log(req.params.id);
         const result = await GetReviewByIdItemModel(req.params.id);
+        console.log(result);
         if (result) {
             res.status(200).send({
                 data: result[2],
