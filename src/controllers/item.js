@@ -463,7 +463,7 @@ exports.GetReviewByIdItemController = async (req, res) => {
         console.log(result);
         if (result) {
             res.status(200).send({
-                data: result[2],
+                data: result[1],
             });
         } else {
             res.status(404).send({
