@@ -15,8 +15,8 @@ INSERT INTO items(id_pelapak,id_category,name,price,quantity,description,image) 
 };
 
 exports.GetAllItemModel = (params) => {
-    const JoinCondition = '`items`.`id_item`=`items_review`.`id_item`';
     const column = '`items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name`, `items`.`price`, `items`.`quantity`, `items`.`weight`, `items`.`description`, `items`.`image`, `items_review`.`id`, `items_review`.`id_user`, `items_review`.`rating`, `items_review`.`review`';
+    const JoinCondition = '`items`.`id_item`=`items_review`.`id_item`';
     
     return new Promise((resolve, reject) => {
         const {
