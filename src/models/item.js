@@ -15,8 +15,8 @@ INSERT INTO items(id_pelapak,id_category,name,price,quantity,description,image) 
 };
 
 exports.GetAllItemModel = (params) => {
-    const join = '`items`.`id_item`=`items_review`.`id_item`';
-    const all = '`items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name`, `items`.`price`, `items`.`quantity`, `items`.`weight`, `items`.`description`, `items`.`image`, `items_review`.`id`, `items_review`.`id_user`, `items_review`.`rating`, `items_review`.`review`';
+    const JoinCondition = '`items`.`id_item`=`items_review`.`id_item`';
+    const column = '`items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name`, `items`.`price`, `items`.`quantity`, `items`.`weight`, `items`.`description`, `items`.`image`, `items_review`.`id`, `items_review`.`id_user`, `items_review`.`rating`, `items_review`.`review`';
     
     return new Promise((resolve, reject) => {
         const {
@@ -30,7 +30,7 @@ exports.GetAllItemModel = (params) => {
         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : "" } LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
         runQuery(`
         SELECT COUNT(*) AS total FROM items ${condition.substring(0,  condition.indexOf("LIMIT"))};
-        SELECT ${all} FROM items LEFT JOIN items_review ON ${join} ${condition}
+        SELECT ${column} FROM items LEFT JOIN items_review ON ${JoinCondition} ${condition}
         `, (err, result) => {
             if (err) {
                 return reject(new Error(err));
