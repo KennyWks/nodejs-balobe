@@ -10,7 +10,7 @@ async function AuthPelapak(req, res, next) {
         token = token.replace(/Bearer\s*/, "");
         const payload = jwt.verify(token, `${process.env.JWT_TOKEN}`);
         req.auth = payload;
-        if (req.auth.role_id === 3) {
+        if (req.auth.role_id === 4) {
             next();
         } else {
             throw new Error("You don't have permission")
