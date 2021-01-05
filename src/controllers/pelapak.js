@@ -36,7 +36,7 @@ exports.CreatePelapakController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -94,7 +94,7 @@ exports.UpdatePelapakController = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -103,6 +103,7 @@ exports.UpdatePelapakController = async (req, res) => {
 };
 
 exports.UpdateLogoContoller = async (req, res) => {
+    console.log(req.file);
     try {
         if (process.env.APP_ENV === 'development') {
             let webPath = req.file.path.replace(/\\/g, '/');
@@ -114,7 +115,6 @@ exports.UpdateLogoContoller = async (req, res) => {
                 }
             })
         } else {
-            console.log(req.file);
             const pathFile = `img-logo/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
             const resultUpdate = await UpdateLogoModel(pathFile, req.auth.id_user);
             const bucket = firebaseAdmin.storage().bucket();
@@ -129,7 +129,7 @@ exports.UpdateLogoContoller = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "Something wrong"
             }
