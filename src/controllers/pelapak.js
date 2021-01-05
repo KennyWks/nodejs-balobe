@@ -114,8 +114,8 @@ exports.UpdateLogoContoller = async (req, res) => {
                 }
             })
         } else {
+            console.log(req.file);
             const pathFile = `img-logo/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
-            console.log(pathFile);
             const resultUpdate = await UpdateLogoModel(pathFile, req.auth.id_user);
             const bucket = firebaseAdmin.storage().bucket();
             const data = bucket.file(pathFile);
