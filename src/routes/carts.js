@@ -1,5 +1,5 @@
 const CartsRouter = require("express").Router();
-const Authentication = require("../middleware/authentication");
+const AuthUser = require("../middleware/auth_user");
 const {
     CreateCartsController,
     GetAllCartsController,
@@ -8,9 +8,9 @@ const {
 } = require("../controllers/carts");
 
 // CartsRouter.post("/", CreateCategory);
-CartsRouter.post("/", Authentication, CreateCartsController);
-CartsRouter.get("/", Authentication, GetAllCartsController);
-CartsRouter.get("/:id", Authentication, GetDetailCartsController);
-CartsRouter.post("/:id", Authentication, CheckOutContoller);
+CartsRouter.post("/", AuthUser, CreateCartsController);
+CartsRouter.get("/", AuthUser, GetAllCartsController);
+CartsRouter.get("/:id", AuthUser, GetDetailCartsController);
+CartsRouter.post("/:id", AuthUser, CheckOutContoller);
 
 module.exports = CartsRouter;

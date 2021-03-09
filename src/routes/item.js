@@ -1,7 +1,6 @@
 const ItemRouter = require("express").Router();
 const UploadImageItem = require("../middleware/upload/uploadImageItem");
-const AuthSeller = require("../middleware/auth_seller");
-const Authentication = require("../middleware/authentication");
+const AuthUser = require("../middleware/auth_user");
 
 const {
     CreateItemController,
@@ -20,20 +19,20 @@ const {
 } = require("../controllers/item");
 
 // routes for items
-ItemRouter.post("/", AuthSeller, UploadImageItem.single("image"), CreateItemController);
+ItemRouter.post("/", AuthUser, UploadImageItem.single("image"), CreateItemController);
 ItemRouter.get("/", GetAllItemController);
 ItemRouter.get("/:id", GetDetailItemController);
-ItemRouter.patch("/:id", AuthSeller, UpdateItemContoller);
-ItemRouter.delete("/:id", AuthSeller, DeleteItemController);
-ItemRouter.get("/pelapak/:id", AuthSeller, GetAllItemPelapakController);
-ItemRouter.patch("/updateItemImage/:id_item", AuthSeller, UploadImageItem.single("image"), UpdateItemImageContoller);
+ItemRouter.patch("/:id", AuthUser, UpdateItemContoller);
+ItemRouter.delete("/:id", AuthUser, DeleteItemController);
+ItemRouter.get("/pelapak/:id", AuthUser, GetAllItemPelapakController);
+ItemRouter.patch("/updateItemImage/:id_item", AuthUser, UploadImageItem.single("image"), UpdateItemImageContoller);
 
 // routes for review items
-ItemRouter.get("/review/user", Authentication, GetReviewByUserController);
+ItemRouter.get("/review/user", AuthUser, GetReviewByUserController);
 ItemRouter.get("/review/:id", GetReviewByIdController);
 ItemRouter.get("/review/item/:id", GetReviewByIdItemController);
 ItemRouter.get("/review/all/data", GetAllReviewController);
-ItemRouter.post("/review", Authentication, CreateReviewController);
-ItemRouter.patch("/review/:id", Authentication, UpdateReviewController);
+ItemRouter.post("/review", AuthUser, CreateReviewController);
+ItemRouter.patch("/review/:id", AuthUser, UpdateReviewController);
 
 module.exports = ItemRouter;

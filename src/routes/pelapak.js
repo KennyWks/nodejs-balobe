@@ -1,8 +1,6 @@
 const PelapakRouter = require("express").Router();
-const AuthBuyer = require("../middleware/auth_buyer");
-const AuthSeller = require("../middleware/auth_seller");
+const AuthUser = require("../middleware/auth_user");
 const AuthAdmin = require("../middleware/auth_admin");
-const Authentication = require("../middleware/authentication");
 const UploadLogo = require("../middleware/upload/uploadLogo");
 
 const {
@@ -13,13 +11,13 @@ const {
   UpdateLogoContoller,
 } = require("../controllers/pelapak");
 
-PelapakRouter.post("/", Authentication, CreatePelapakController);
+PelapakRouter.post("/", AuthUser, CreatePelapakController);
 PelapakRouter.get("/", AuthAdmin, GetAllPelapakContoller);
-PelapakRouter.get("/profile", Authentication, GetDetailPelapakController);
-PelapakRouter.patch("/", AuthSeller, UpdatePelapakController);
+PelapakRouter.get("/profile", GetDetailPelapakController);
+PelapakRouter.patch("/", AuthUser, UpdatePelapakController);
 PelapakRouter.patch(
   "/updateImage",
-  AuthSeller,
+  AuthUser,
   UploadLogo.single("image"),
   UpdateLogoContoller
 );

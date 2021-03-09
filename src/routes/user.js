@@ -1,18 +1,16 @@
 const UserRouter = require("express").Router();
 const UploadFileImageUser = require("../middleware/upload/uploadPictureUser");
 
-//midleware for user (buyer)
-const Authentication = require("../middleware/authentication");
-//midleware for user (pelapak)
-const AuthSeller = require("../middleware/auth_seller");
+//midleware for user (buyer + seller(pelapak))
+const AuthUser = require("../middleware/auth_user");
 //midleware for user (admin)
 const AuthAdmin = require("../middleware/auth_admin");
 
 const {
   GetAllUserController,
   GetUserController,
-  UpdateImageProfileUserContoller,
   UpdateProfileUserContoller,
+  UpdateImageProfileUserContoller,
 } = require("../controllers/user");
 
 //get all data user by admin
@@ -23,26 +21,26 @@ UserRouter.get("/user/:id", GetUserController);
 // buyer routes
 UserRouter.patch(
   "/updateProfileBuyer",
-  Authentication,
+  AuthUser,
   UpdateProfileUserContoller
 );
 UserRouter.patch(
   "/updateImageProfileBuyer",
-  Authentication,
+  AuthUser,
   UploadFileImageUser.single("image"),
   UpdateImageProfileUserContoller
 );
 
-// pelapak routes
+// seller (pelapak) routes
 UserRouter.patch(
   "/updateImageProfilePelapak",
-  AuthSeller,
+  AuthUser,
   UploadFileImageUser.single("image"),
   UpdateImageProfileUserContoller
 );
 UserRouter.patch(
   "/updateProfilePelapak",
-  AuthSeller,
+  AuthUser,
   UpdateProfileUserContoller
 );
 
