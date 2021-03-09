@@ -3,6 +3,7 @@ const fs = require("fs");
 const {
     CreateItemModel,
     GetAllItemModel,
+    GetAllItemPelapakModel,
     GetDetailItemModel,
     UpdateItemModel,
     DeleteItemModel,
