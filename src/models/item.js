@@ -40,6 +40,29 @@ exports.GetAllItemModel = (params) => {
     });
 }
 
+exports.GetAllItemPelapakModel = (params, id_pelapak) => {
+    return new Promise((resolve, reject) => {
+        const {
+            limit,
+            page,
+            sort,
+            search
+        } = params;
+        const condition = `
+        ${search ? `WHERE id_pelapak = ${id_pelapak} AND name_product LIKE '%${search}%'` : ""}
+        ${sort ? `ORDER BY ${sort.key} ${sort.value}` : "" } LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
+        runQuery(`
+        SELECT COUNT(*) AS total FROM items ${condition.substring(0,  condition.indexOf("LIMIT"))};
+        SELECT * FROM items ${condition}
+        `, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+            return resolve(result);
+        });
+    });
+}
+
 exports.GetDetailItemModel = (id_item) => {
     return new Promise((resolve, reject) => {
         runQuery('SELECT `items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name` as name_product, `items`.`price`, `items`.`quantity`, `items`.`weight`, `items`.`description`, `items`.`image`, `items`.`created_at`, `items`.`updated_at`, `category`.`hs_code`, `category`.`name` as name_category, `pelapak`.`name` as name_pelapak, `pelapak`.`logo`, `pelapak`.`description` as desc_pelapak, `pelapak`.`location` FROM items JOIN category ON `items`.`id_category` = `category`.`id_category` JOIN pelapak ON `items`.`id_pelapak` = `pelapak`.`id_pelapak` WHERE id_item = ' +id_item, (err, result) => {

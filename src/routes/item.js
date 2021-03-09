@@ -6,6 +6,7 @@ const Authentication = require("../middleware/authentication");
 const {
     CreateItemController,
     GetAllItemController,
+    GetAllItemPelapakController,
     GetDetailItemController,
     UpdateItemContoller,
     DeleteItemController,
@@ -21,6 +22,7 @@ const {
 // routes for items
 ItemRouter.post("/", AuthPelapak, UploadImageItem.single("image"), CreateItemController);
 ItemRouter.get("/", GetAllItemController);
+ItemRouter.get("/pelapak/:id", AuthPelapak, GetAllItemPelapakController);
 ItemRouter.get("/:id", GetDetailItemController);
 ItemRouter.patch("/:id", AuthPelapak, UpdateItemContoller);
 ItemRouter.delete("/:id", AuthPelapak, DeleteItemController);
