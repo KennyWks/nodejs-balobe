@@ -52,7 +52,7 @@ exports.GetAllItemPelapakModel = (params, id_pelapak) => {
         ${search ? `&& name LIKE '%${search}%'` : ""}
         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : "" } LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
         runQuery(`
-        SELECT COUNT(*) AS total FROM items ${condition.substring(0,  condition.indexOf("LIMIT"))};
+        SELECT COUNT(*) AS total FROM items WHERE id_pelapak = ${id_pelapak} ${condition.substring(0,  condition.indexOf("LIMIT"))};
         SELECT * FROM items WHERE id_pelapak = ${id_pelapak} ${condition}
         `, (err, result) => {
             if (err) {
