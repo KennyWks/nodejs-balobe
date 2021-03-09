@@ -15,7 +15,7 @@ const {
 
 PelapakRouter.post("/", Authentication, CreatePelapakController);
 PelapakRouter.get("/", AuthAdmin, GetAllPelapakContoller);
-PelapakRouter.get("/profile", AuthSeller, GetDetailPelapakController);
+PelapakRouter.get("/profile", Authentication, GetDetailPelapakController);
 PelapakRouter.patch("/", AuthSeller, UpdatePelapakController);
 PelapakRouter.patch(
   "/updateImage",
