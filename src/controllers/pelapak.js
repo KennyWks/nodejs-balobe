@@ -45,6 +45,8 @@ exports.CreatePelapakController = async (req, res) => {
 };
 
 exports.GetDetailPelapakController = async (req, res) => {
+    console.log(req);
+    console.log(req.auth.id_user);
     try {
         const result = await GetDetailPelapakModel(req.auth.id_user);
         console.log(result);
