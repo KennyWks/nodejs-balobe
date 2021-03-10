@@ -1,7 +1,7 @@
 require('dotenv').config();
 const jwt = require("jsonwebtoken");
 
-async function Aunthentication(req, res, next) {
+async function AuthUser(req, res, next) {
     try {
         let token = req.headers.authorization || "";
         if (!token) {
@@ -23,4 +23,4 @@ async function Aunthentication(req, res, next) {
     }
 }
 
-module.exports = Aunthentication;
+module.exports = AuthUser;

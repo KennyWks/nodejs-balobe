@@ -1,7 +1,7 @@
 require('dotenv').config();
 const jwt = require("jsonwebtoken");
 
-async function AuthPelapak(req, res, next) {
+async function AuthStore(req, res, next) {
     try {
         let token = req.headers.authorization || "";
         if (!token) {
@@ -10,7 +10,7 @@ async function AuthPelapak(req, res, next) {
         token = token.replace(/Bearer\s*/, "");
         const payload = jwt.verify(token, `${process.env.JWT_TOKEN}`);
         req.auth = payload;
-        if (req.auth.role_id === 4) {
+        if (req.auth.role_id === 3 || req.auth.role_id === 2) {
             next();
         } else {
             throw new Error("You don't have permission")
@@ -23,4 +23,4 @@ async function AuthPelapak(req, res, next) {
     }
 }
 
-module.exports = AuthPelapak;
+module.exports = AuthStore;
