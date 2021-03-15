@@ -57,8 +57,7 @@ exports.CreateItemController = async (req, res) => {
         throw new Error("create failed");
       }
     } else {
-      console.log(`file ${req.file}`);
-      console.log(`file mimetype ${req}`);
+      console.log(req);
       const nameFileItem = new Date().getTime();
       const pathFile = `img-items/${nameFileItem}.${
         req.file.mimetype.split("/")[1]
@@ -70,6 +69,7 @@ exports.CreateItemController = async (req, res) => {
         name: req.body.name,
         price: req.body.price,
         quantity: req.body.quantity,
+        weight: req.body.weight,
         description: req.body.description,
         image: pathFile,
       };
