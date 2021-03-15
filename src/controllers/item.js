@@ -58,7 +58,7 @@ exports.CreateItemController = async (req, res) => {
       }
     } else {
       console.log(`file ${req.file}`);
-      console.log(`file mimetype ${req.file.mimetype}`);
+      console.log(`file mimetype ${req}`);
       const nameFileItem = new Date().getTime();
       const pathFile = `img-items/${nameFileItem}.${
         req.file.mimetype.split("/")[1]
