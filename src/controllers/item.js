@@ -21,6 +21,8 @@ const {
 exports.CreateItemController = async (req, res) => {
   try {
     if (
+      !req.body.id_pelapak ||
+      !req.body.id_category ||
       !req.body.name ||
       !req.body.price ||
       !req.body.quantity ||
@@ -55,8 +57,8 @@ exports.CreateItemController = async (req, res) => {
         throw new Error("create failed");
       }
     } else {
-      console.log(req.file);
-      console.log(req.file.mimetype);
+      console.log(`file ${req.file}`);
+      console.log(`file mimetype ${req.file.mimetype}`);
       const nameFileItem = new Date().getTime();
       const pathFile = `img-items/${nameFileItem}.${
         req.file.mimetype.split("/")[1]
