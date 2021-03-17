@@ -35,7 +35,7 @@ exports.GetAllCartsModel = (params, id_user) => {
                     `;
 
         const select = `
-                       id, id_user, id_item, total_item, total_price, name.items as name_item, price.items, image.items, name.pelapak as name_pelapak
+                       id, id_user, id_item.carts, total_item, total_price, name.items as name_item, price.items, image.items, name.pelapak as name_pelapak
                        `;
 
         runQuery(`
