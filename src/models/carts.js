@@ -28,13 +28,13 @@ exports.GetAllCartsModel = (params, id_user) => {
             ${sort ? `ORDER BY ${sort.key} ${sort.value}` : `` } LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
 
         const join = `
-                    LEFT JOIN items
+                    JOIN items
                     ON items.id_item = carts.id_item
-                    LEFT JOIN pelapak
+                    JOIN pelapak
                     ON pelapak.id_pelapak = carts.id_pelapak
                     `;
 
-        const select = "`id_user`.`carts`, `id_item`.`carts`, `total_item`.`carts`, `total_price`.`carts`, `name`.`items` as name_item, `price`.`items`, `image`.`items`, `name`.`pelapak` as name_pelapak";
+        const select = "`id`.`carts`, `id_user`.`carts`, `id_item`.`carts`, `total_item`.`carts`, `total_price`.`carts`, `name`.`items` as name_item, `price`.`items`, `image`.`items`, `name`.`pelapak` as name_pelapak";
 
         runQuery(`
             SELECT COUNT(*) AS total FROM carts WHERE id_user=${id_user} ${condition.substring(0,  condition.indexOf("LIMIT"))};
