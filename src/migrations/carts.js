@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS carts(
     id INT(11) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     id_user INT(11) UNSIGNED,
     id_item INT(11) UNSIGNED,
-    name_item VARCHAR(100) NOT NULL,
+    id_pelapak INT(11) UNSIGNED,
     total_item INT(11) NOT NULL,    
     total_price INT(11) NOT NULL,    
     is_check_out INT(1) NOT NULL,    
@@ -15,6 +15,10 @@ const cartsRelation = `
 ALTER TABLE carts
     ADD CONSTRAINT fk_users_carts
     FOREIGN KEY (id_user) REFERENCES users(id_user)
+    ON DELETE SET NULL;
+ALTER TABLE carts
+    ADD CONSTRAINT fk_pelapak_carts
+    FOREIGN KEY (id_pelapak) REFERENCES pelapak(id_pelapak)
     ON DELETE SET NULL;
 ALTER TABLE carts
     ADD CONSTRAINT fk_item_carts
