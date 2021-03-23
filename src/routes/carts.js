@@ -13,6 +13,6 @@ CartsRouter.post("/", AuthUser, CreateCartsController);
 CartsRouter.get("/", AuthUser, GetAllCartsController);
 CartsRouter.get("/:id", AuthUser, GetDetailCartsController);
 CartsRouter.patch("/update/:id", AuthUser, UpdateCartsController);
-CartsRouter.post("/:id", AuthUser, CheckOutContoller);
+CartsRouter.post("/checkout/:id", AuthUser, CheckOutContoller);
 
 module.exports = CartsRouter;
