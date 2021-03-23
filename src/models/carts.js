@@ -34,7 +34,7 @@ exports.GetAllCartsModel = (params, id_user) => {
                     ON pelapak.id_pelapak = carts.id_pelapak
                     `;
 
-        const select = "`carts`.`id`, `carts`.`id_user`, `carts`.`id_item`, `carts`.`total_item`, `carts`.`total_price`, `items`.`name` as name_item, `items`.`price`, `items`.`image`, `pelapak`.`name` as name_pelapak";
+        const select = "`carts`.`id`, `carts`.`id_user`, `carts`.`id_item`, `carts`.`total_item`, `carts`.`total_price`, `items`.`name` as name_item, `items`.`price`, `items`.`price`, `items`.`image`, `pelapak`.`name` as name_pelapak";
 
         runQuery(`
             SELECT COUNT(*) AS total FROM carts WHERE id_user=${id_user} && is_check_out = 0 ${condition.substring(0,  condition.indexOf("LIMIT"))};
