@@ -60,6 +60,22 @@ exports.GetDetailCartsModel = (id_carts) => {
     });
 }
 
+exports.UpdateCartsModel = (id_carts, data) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`SELECT * FROM carts WHERE id=${id_carts}`, (err, result) => {
+            if (err || !result[1][0]) {
+                return reject(new Error(`carts with id : ${id_carts} not exists`));
+            }
+            runQuery(`UPDATE carts SET total_item = ${data.total_item}, total_price = ${data.total_price} WHERE id = ${id_carts}`, (err, result) => {
+                if (err) {
+                    return reject(new Error(err));
+                }
+                
+            });
+        });
+    });
+}
+
 exports.CheckOutModel = (id_carts, data) => {
     return new Promise((resolve, reject) => {
         runQuery(`SELECT * FROM carts WHERE id=${id_carts}`, (err, result) => {

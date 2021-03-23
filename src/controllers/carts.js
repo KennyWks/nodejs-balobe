@@ -2,6 +2,7 @@ const {
   CreateCartsModel,
   GetAllCartsModel,
   GetDetailCartsModel,
+  UpdateCartsModel,
   CheckOutModel,
 } = require("../models/carts");
 
@@ -112,6 +113,37 @@ exports.GetDetailCartsController = async (req, res) => {
   }
 };
 
+exports.UpdateCartsController = async (req, res) => {
+  try {
+    const data = {
+      total_item: req.body.total_item,
+      total_price: req.body.total_price,
+    };
+    const result = await UpdateCartsModel(req.params.id, data);
+    console.log(result);
+    if (result) {
+      res.status(200).send({
+        data: {
+          msg: `Your carts with id ${req.params.id} is updated`,
+        },
+      });
+    } else {
+      res.status(202).send({
+        data: {
+          msg: `Carts with id ${reg.params.id} Not Exists`,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).send({
+      error: {
+        msg: error.message || "something wrong",
+      },
+    });
+  }
+};
+
 exports.CheckOutContoller = async (req, res) => {
   try {
     const data = {
@@ -138,7 +170,7 @@ exports.CheckOutContoller = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong",
       },

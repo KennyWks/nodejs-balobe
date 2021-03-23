@@ -4,6 +4,7 @@ const {
     CreateCartsController,
     GetAllCartsController,
     GetDetailCartsController,
+    UpdateCartsController,
     CheckOutContoller
 } = require("../controllers/carts");
 
@@ -11,6 +12,7 @@ const {
 CartsRouter.post("/", AuthUser, CreateCartsController);
 CartsRouter.get("/", AuthUser, GetAllCartsController);
 CartsRouter.get("/:id", AuthUser, GetDetailCartsController);
+CartsRouter.post("/update/:id", AuthUser, UpdateCartsController);
 CartsRouter.post("/:id", AuthUser, CheckOutContoller);
 
 module.exports = CartsRouter;
