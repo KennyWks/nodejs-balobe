@@ -10,7 +10,7 @@ INSERT INTO items(id_pelapak,id_category,name,price,quantity,weight,description,
           return reject(new Error(err));
         }
         return resolve(result);
-      }
+      } 
     );
   });
 };
@@ -22,20 +22,11 @@ exports.GetAllItemModel = (params) => {
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
-    const condition = `
-        ${search ? `WHERE name LIKE '%${search}%'` : ""}
-        ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(
-      limit
-    )} OFFSET ${parseInt(page) - 1}`;
-    runQuery(
-      `
-        SELECT COUNT(*) AS total FROM items ${condition.substring(
-          0,
-          condition.indexOf("LIMIT")
-        )};
-        SELECT ${column} FROM items LEFT JOIN items_review ON ${JoinCondition} ${condition}
-        `,
-      (err, result) => {
+    const condition = ` ${search ? `WHERE name LIKE '%${search}%'` : ""}
+                        ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
+
+    runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
+        SELECT ${column} FROM items JOIN items_review ON ${JoinCondition} ${condition}`, (err, result) => {
         if (err) {
           return reject(new Error(err));
         }

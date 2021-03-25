@@ -41,7 +41,7 @@ exports.CreateItemController = async (req, res) => {
         quantity: req.body.quantity,
         weight: req.body.weight,
         description: req.body.description,
-        image: webPath,
+        image: webPath, 
       };
 
       const resultQuery = await CreateItemModel(dataItems);
