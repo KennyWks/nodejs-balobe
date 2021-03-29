@@ -26,9 +26,9 @@ exports.GetAllItemModel = (params) => {
                   quantity,
                   weight,
                   description,
-                  image FROM items) AS u`;
+                  image FROM items) u`;
 
-  const column2 = `(SELECT id_item, COALESCE(MAX(t.rating),0) AS rating FROM items_review) AS t`;
+  const column2 = `(SELECT id_item, COALESCE(MAX(t.rating),0) AS rating FROM items_review) t`;
 
   const Join = `t.id_item = u.id_item`;
 
