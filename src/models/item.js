@@ -26,11 +26,13 @@ exports.GetAllItemModel = (params) => {
                   u.description,
                   u.image`;
 
-  const column2 = `(SEECT 
-                    id_item,
-                    COALESCE(MAX(t.rating), 0) AS rating 
-                   FROM items_review 
-                   GROUP BY id_item) AS t`
+  const column2 = `(
+                    SEECT 
+                      id_item, COALESCE(MAX(items_review.rating), 0) AS rating 
+                   FROM 
+                      items_review 
+                   GROUP 
+                      BY id_item) AS t`
 
   const Join = `t.id_item = u.id_item`;
 
