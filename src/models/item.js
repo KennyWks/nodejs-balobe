@@ -32,7 +32,7 @@ exports.GetAllItemModel = (params) => {
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
-    const condition = ` ${search ? `WHERE items.name LIKE '%${search}%'` : ""}
+    const condition = ` ${search ? `WHERE items.name LIKE '%${search}%' GROUP BY items_review.id_item` : "GROUP BY items_review.id_item"}
                         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
 
     runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
