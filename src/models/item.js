@@ -17,7 +17,7 @@ INSERT INTO items(id_pelapak,id_category,name,price,quantity,weight,description,
 
 exports.GetAllItemModel = (params) => {
   const column = `i.id_item,
-                  i.name,
+                  i.name as name,
                   i.id_category,
                   i.name,
                   i.price,
@@ -32,7 +32,7 @@ exports.GetAllItemModel = (params) => {
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
-    const condition = ` ${search ? `WHERE i.name LIKE '%${search}%'` : ""}
+    const condition = ` ${search ? `WHERE name LIKE '%${search}%'` : ""}
                         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
 
     runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
