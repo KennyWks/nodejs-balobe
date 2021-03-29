@@ -24,11 +24,15 @@ exports.GetAllItemModel = (params) => {
                   u.quantity,
                   u.weight,
                   u.description,
-                  u.image,
-                  COALESCE(MAX(t.rating),
-                  0) AS rating`;
+                  u.image`;
 
-  const Join = `t.id_item = u.id_item GROUP BY u.id_item`;
+  const column2 = `(SEECT 
+                    id_item,
+                    COALESCE(MAX(t.rating), 0) AS rating 
+                   FROM items_review 
+                   GROUP BY id_item) AS t`
+
+  const Join = `t.id_item = u.id_item`;
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
@@ -36,7 +40,7 @@ exports.GetAllItemModel = (params) => {
                         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
 
     runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
-        SELECT ${column} FROM items u LEFT JOIN items_review t ON ${Join} ${condition}`, (err, result) => {
+        SELECT ${column} FROM items AS u LEFT JOIN ${column2} ON ${Join} ${condition}`, (err, result) => {
         if (err) {
           return reject(new Error(err));
         }
