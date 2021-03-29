@@ -28,7 +28,7 @@ exports.GetAllItemModel = (params) => {
 
   const column2 = `(
                     SEECT 
-                      id_item, MAX(items_review.rating) AS rating 
+                      id_item, COALESCE(MAX(rating), 0) AS rating 
                    FROM 
                       items_review 
                    GROUP 
