@@ -28,11 +28,11 @@ exports.GetAllItemModel = (params) => {
 
   const column2 = `(
                     SEECT 
-                      id_item, COALESCE(MAX(items_review.rating), 0) AS rating 
+                      id_item, MAX(items_review.rating) AS rating 
                    FROM 
                       items_review 
                    GROUP 
-                      BY id_item) AS t`
+                      BY id_item) AS t`;
 
   const Join = `t.id_item = u.id_item`;
 
