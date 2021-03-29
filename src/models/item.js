@@ -28,11 +28,12 @@ exports.GetAllItemModel = (params) => {
                   COALESCE(MAX(r.rating),
                   0) AS rating`;
 
-  const Join = `r.id_item = i.id_item GROUP BY i.id_item`;
+  const Join = `r.id_item = i.id_item`;
+  const groupBy = `GROUP BY i.id_item`;
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
-    const condition = ` ${search ? `AND i.name LIKE '%${search}%'` : ""}
+    const condition = ` ${search ? `WHERE i.name LIKE '%${search}%' ${groupBy}` : `${groupBy}`}
                         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
 
     runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
