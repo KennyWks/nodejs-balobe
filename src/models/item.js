@@ -16,27 +16,27 @@ INSERT INTO items(id_pelapak,id_category,name,price,quantity,weight,description,
 };
 
 exports.GetAllItemModel = (params) => {
-  const column = `u.id_item,
-                  u.name,
-                  u.id_category,
-                  u.name,
-                  u.price,
-                  u.quantity,
-                  u.weight,
-                  u.description,
-                  u.image,
-                  COALESCE(MAX(t.rating),
+  const column = `i.id_item,
+                  i.name,
+                  i.id_category,
+                  i.name,
+                  i.price,
+                  i.quantity,
+                  i.weight,
+                  i.description,
+                  i.image,
+                  COALESCE(MAX(r.rating),
                   0) AS rating`;
 
-  const Join = `t.id_item = u.id_item GROUP BY u.id_item`;
+  const Join = `r.id_item = i.id_item GROUP BY i.id_item`;
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
-    const condition = ` ${search ? `WHERE name LIKE '%${search}%'` : ""}
+    const condition = ` ${search ? `WHERE i.name LIKE '%${search}%'` : ""}
                         ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
 
     runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
-        SELECT ${column} FROM items u LEFT JOIN items_review t ON ${Join} ${condition}`, (err, result) => {
+        SELECT ${column} FROM items i LEFT JOIN items_review r ON ${Join} ${condition}`, (err, result) => {
         if (err) {
           return reject(new Error(err));
         }
