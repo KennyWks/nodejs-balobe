@@ -29,7 +29,6 @@ exports.GetAllItemModel = (params) => {
                   0) AS rating`;
 
   const Join = `r.id_item = i.id_item GROUP BY i.id_item`;
-  const search = '`' 
 
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
