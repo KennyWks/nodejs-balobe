@@ -120,7 +120,7 @@ exports.UpdateCartsController = async (req, res) => {
       total_price: req.body.total_price,
     };
     const result = await UpdateCartsModel(req.params.id, data);
-    console.log(result);
+    // console.log(result);
     if (result) {
       res.status(200).send({
         data: {
