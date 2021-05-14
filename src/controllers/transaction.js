@@ -1,5 +1,6 @@
 const {
-  GetDetailTransactionModel
+  GetDetailTransactionModel,
+  GetAllTransactionModel
   } = require("../models/transaction");
 
   exports.GetDetailTransactionController = async (req, res) => {
