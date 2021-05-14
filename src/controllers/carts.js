@@ -62,7 +62,7 @@ exports.GetAllCartsController = async (req, res) => {
     }
 
     const result = await GetAllCartsModel(params, req.auth.id_user);
-    console.log(result[1][0].total);
+    // console.log(result[1][0].total);
     if (result) {
       const totalData = result[1][0].total;
       const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -93,7 +93,7 @@ exports.GetAllCartsController = async (req, res) => {
 exports.GetDetailCartsController = async (req, res) => {
   try {
     const result = await GetDetailCartsModel(req.params.id);
-    console.log(result);
+    // console.log(result);
     if (result[1][0]) {
       res.status(200).send({
         data: result[1][0],
@@ -120,7 +120,7 @@ exports.UpdateCartsController = async (req, res) => {
       total_price: req.body.total_price,
     };
     const result = await UpdateCartsModel(req.params.id, data);
-    console.log(result);
+    // console.log(result);
     if (result) {
       res.status(200).send({
         data: {
@@ -153,7 +153,7 @@ exports.CheckOutContoller = async (req, res) => {
       total_price: req.body.total_price,
     };
     const result = await CheckOutModel(req.params.id, data);
-    console.log(result);
+    // console.log(result);
     if (result) {
       res.status(200).send({
         data: {

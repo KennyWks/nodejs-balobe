@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
-require('dotenv').config();
+require("dotenv").config();
 
 //Logger
 app.use(morgan("tiny"));
@@ -30,13 +30,14 @@ const RoleRouter = require("./src/routes/role");
 const PelapakRouter = require("./src/routes/pelapak");
 const ItemRouter = require("./src/routes/item");
 const CartsRouter = require("./src/routes/carts");
+const TransactionRouter = require("./src/routes/transaction");
 const Api = require("./src/routes/api");
 
-app.get("/", (req, res)=>{
+app.get("/", (req, res) => {
   res.status(200).send({
-    msg:"welcome to balobe"
-  })
-})
+    msg: "welcome to balobe",
+  });
+});
 app.use("/article", ArtilceRouter);
 app.use("/category", CategoryRouter);
 app.use("/auth", AuthRouter);
@@ -46,6 +47,7 @@ app.use("/role", RoleRouter);
 app.use("/pelapak", PelapakRouter);
 app.use("/item", ItemRouter);
 app.use("/carts", CartsRouter);
+app.use("/transaction", TransactionRouter);
 app.use("/api", Api);
 
 app.use((req, res, next) => {
