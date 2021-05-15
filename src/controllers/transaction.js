@@ -6,7 +6,7 @@ const {
   exports.GetDetailTransactionController = async (req, res) => {
     try {
       const result = await GetDetailTransactionModel(req.params.id);
-      console.log(result);
+      // console.log(result);
       if (result[1][0]) {
         res.status(200).send({
           data: result[1][0],
