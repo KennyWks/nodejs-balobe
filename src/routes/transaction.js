@@ -5,7 +5,7 @@ const {
   GetAllTransactionController,
 } = require("../controllers/transaction");
 
-TransactionRouter.get("/", AuthUser, GetAllTransactionController);
 TransactionRouter.get("/:id", AuthUser, GetDetailTransactionController);
+TransactionRouter.get("/all", AuthUser, GetAllTransactionController);
 
 module.exports = TransactionRouter;
