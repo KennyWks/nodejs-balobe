@@ -4,7 +4,7 @@ const {
 
 exports.GetDetailTransactionModel = (id) => {
     return new Promise((resolve, reject) => {
-        runQuery(`SELECT * FROM transaction JOIN items ON items.id_item = transaction.list_item WHERE id=${id} `, (err, result) => {
+        runQuery(`SELECT * FROM transaction JOIN items ON items.id_item = transaction.list_item WHERE id=${id}`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }
