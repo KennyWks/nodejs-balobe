@@ -21,7 +21,7 @@ exports.GetAllTransactionModel = (params) => {
             sort,
             search,
             id_user
-        } = params;
+        } = params; 
 
         const join = ` JOIN items ON items.id_item = transaction.list_item WHERE id_user = ${id_user}`;
         
