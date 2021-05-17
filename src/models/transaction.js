@@ -23,7 +23,7 @@ exports.GetAllTransactionModel = (params) => {
             id_user
         } = params; 
 
-        const join = ` JOIN items ON items.id_item = transaction.list_item WHERE id_user = ${id_user}`;
+        const join = `JOIN items ON items.id_item = transaction.list_item WHERE transaction.id_user = ${id_user}`;
         
         const condition = `
         ${search ? `AND name LIKE '%${search}%'` : ""}
