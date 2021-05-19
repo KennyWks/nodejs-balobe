@@ -152,7 +152,6 @@ exports.CheckOutContoller = async (req, res) => {
       total_item: req.body.total_item,
       total_price: req.body.total_price,
     };
-    console.log('controller data', req);
     const result = await CheckOutModel(req.params.id, data);
     if (result) {
       res.status(200).send({
