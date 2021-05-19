@@ -25,7 +25,7 @@ exports.GetAllItemModel = (params) => {
                   u.weight,
                   u.description,
                   u.image,
-                  t.id_item,
+                  t.id_item AS rid_item,
                   t.rating`;
 
   const tableJoin = `(SELECT id_item, COALESCE(MAX(rating), 0) AS rating FROM items_review GROUP BY id_item) AS t`;
