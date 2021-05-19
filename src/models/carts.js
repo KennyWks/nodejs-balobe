@@ -77,7 +77,7 @@ exports.UpdateCartsModel = (id_carts, data) => {
 }
 
 exports.CheckOutModel = (id_carts, data) => {
-    console.log(data);
+    console.log('model', data);
     return new Promise((resolve, reject) => {
         runQuery(`SELECT * FROM carts WHERE id=${id_carts}`, (err, result) => {
             if (err || !result[1][0]) {
