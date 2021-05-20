@@ -138,7 +138,6 @@ exports.GetAllUserController = async (req, res) => {
             };
         }
 
-
         if (req.query.q) {
             params.search = req.query.q
         }
