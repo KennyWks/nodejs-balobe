@@ -14,7 +14,7 @@ const {
 } = require("../controllers/user");
 
 //get all data user by admin
-UserRouter.get("/all", AuthAdmin, GetAllUserController);
+UserRouter.get("/user/all", AuthAdmin, GetAllUserController);
 
 UserRouter.get("/user/:id", GetUserController);
 
