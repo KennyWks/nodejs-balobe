@@ -28,12 +28,12 @@ exports.SignupController = async (req, res) => {
 
         const checkUsername = await GetUsernameSignupModel(req.body.username);
         if (checkUsername[1].length > 0) {
-            throw new Error("Username is exists, try other username");
+            throw new Error("Username is found, try other username");
         }
 
         const checkEmail = await GetEmailSignupModel(req.body.email);
         if (checkEmail[1].length > 0) {
-            throw new Error("Email is exists, try other email");
+            throw new Error("Email is found, try other email");
         }
 
         const hashPassword = bcrypt.hashSync(req.body.password);
@@ -251,7 +251,7 @@ exports.ForgotPassController = async (req, res) => {
                 throw new Error("your account is not activate");
             }
         } else {
-            throw new Error("your email is not exists in database");
+            throw new Error("your email is not found");
         }
     } catch (error) {
         console.log(error);

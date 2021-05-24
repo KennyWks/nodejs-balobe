@@ -9,7 +9,7 @@ const {
 exports.CreateCategoryController = async (req, res) => {
     try {
         if (!req.body.name || !req.body.hs_code) {
-            throw new Error("field name or hs_code is required")
+            throw new Error("field name or HS code is required")
         }
         const resultQuery = await CreateCategoryModel(req.body.hs_code,req.body.name);
         console.log(resultQuery);
@@ -17,16 +17,15 @@ exports.CreateCategoryController = async (req, res) => {
             res.status(200).send({
                 data: {
                     id: resultQuery[1].insertId,
-                    name: req.body.name,
-                    msg: "create category success"
+                    msg: `Category with id ${resultQuery[1].insertId} succesfully created`
                 },
             });
         } else {
-            throw new Error("create failed")
+            throw new Error("Error")
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -48,7 +47,6 @@ exports.GetAllCategoryController = async (req, res) => {
                 value: sortingValue[1] ? sortingValue[1].toUpperCase() : "ASC"
             };
         }
-
         
         if (req.query.q) {
             params.search = req.query.q
@@ -93,7 +91,7 @@ exports.GetDetailCategoryController = async (req, res) => {
             });
         } else {
             res.status(404).send({
-                msg: "id category not found"
+                msg: `Category with id ${req.params.id} is not found`
             });
         }
     } catch (error) {
@@ -114,19 +112,19 @@ exports.DeleteCategoryController = async (req, res) => {
             res.status(200).send({
                 data: {
                     id: parseInt(req.params.id),
-                    msg: `ID category ${req.params.id} is succesfully deleted`,
+                    msg: `Category with id ${req.params.id} succesfully deleted`,
                 }
             });
         } else{
-            res.status(202).send({
+            res.status(404).send({
                 data: {
-                    msg: `category with id ${reg.params.id} Not Exists`,
+                    msg: `Category with id ${req.params.id} is not found`
                 }
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -139,6 +137,7 @@ exports.UpdateCategoryController = async (req, res) => {
         if (!Object.keys(req.body).length > 0) {
             throw new Error("Please add data to update");
         }
+
         const dataUpdate = {};
         const fillAble = ['hs_code','name'];
         fillAble.forEach((v) => {
@@ -156,12 +155,12 @@ exports.UpdateCategoryController = async (req, res) => {
         res.status(200).send({
             data: {
                 id: req.params.id,
-                name: req.body.name
+                msg: `Category with id ${req.params.id} succesfully updated`,
             },
         });
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong",
             },

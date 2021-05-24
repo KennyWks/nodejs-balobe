@@ -13,7 +13,7 @@ const {
         });
       } else {
         res.status(404).send({
-          msg: "data transaction not found",
+          msg: "data transaction is not found",
         });
       }
     } catch (error) {

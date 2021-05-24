@@ -151,7 +151,7 @@ exports.DeleteArticleController = async (req, res) => {
     } else {
       res.status(404).send({
         data: {
-          msg: `Article with id ${req.params.id} is not exist`
+          msg: `Article with id ${req.params.id} is not found`
         }
       });
     }

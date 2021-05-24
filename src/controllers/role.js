@@ -157,7 +157,7 @@ exports.DeleteRoleController = async (req, res) => {
                 data: {
                     msg: `Role with id ${reg.params.id} is not exists`,
                 }
-            });
+            }); 
         }
     } catch (error) {
         console.log(error);

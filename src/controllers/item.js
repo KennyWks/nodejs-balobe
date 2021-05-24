@@ -41,7 +41,7 @@ exports.CreateItemController = async (req, res) => {
         quantity: req.body.quantity,
         weight: req.body.weight,
         description: req.body.description,
-        image: webPath, 
+        image: webPath,
       };
 
       const resultQuery = await CreateItemModel(dataItems);
@@ -50,11 +50,11 @@ exports.CreateItemController = async (req, res) => {
         res.status(200).send({
           data: {
             id: resultQuery[1].insertId,
-            msg: "create item success",
+            msg: "Item is created",
           },
         });
       } else {
-        throw new Error("create failed");
+        throw new Error("Error");
       }
     } else {
       console.log(req);
@@ -83,13 +83,13 @@ exports.CreateItemController = async (req, res) => {
           path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(
             pathFile
           )}?alt=media`,
-          msg: "upload image is success",
+          msg: "Image is uploaded",
         },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong!",
       },
@@ -204,7 +204,7 @@ exports.GetDetailItemController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "id item not found",
+        msg: "Item is not found",
       });
     }
   } catch (error) {
@@ -247,12 +247,12 @@ exports.UpdateItemContoller = async (req, res) => {
     res.status(200).send({
       data: {
         id: req.params.id,
-        name: req.body.name,
+        msg: "Items is updated",
       },
     });
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong",
       },
@@ -267,20 +267,14 @@ exports.DeleteItemController = async (req, res) => {
     if (result[1].affectedRows) {
       res.status(200).send({
         data: {
-          id: parseInt(req.params.id),
-          msg: `ID item ${req.params.id} sucessfully deleted`,
-        },
-      });
-    } else {
-      res.status(202).send({
-        data: {
-          msg: `item with id ${reg.params.id} Not Exists`,
+          id: req.params.id,
+          msg: `Item is sucessfully deleted`,
         },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong",
       },
@@ -320,7 +314,7 @@ exports.UpdateItemImageContoller = async (req, res) => {
           data: {
             id_item: req.params.id_item,
             lokasiFile: webPath,
-            msg: "upload image is success",
+            msg: "Image is uploaded",
           },
         });
       } else {
@@ -347,18 +341,18 @@ exports.UpdateItemImageContoller = async (req, res) => {
             path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(
               pathFile
             )}?alt=media`,
-            msg: "upload image is success",
+            msg: "Image is uploaded",
           },
         });
       }
     } else {
       res.status(404).send({
-        msg: "id item not found",
+        msg: "Item not found",
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "Something wrong",
       },
@@ -387,15 +381,15 @@ exports.CreateReviewController = async (req, res) => {
       res.status(200).send({
         data: {
           id: resultQuery[1].insertId,
-          msg: "create item success",
+          msg: "Review is created",
         },
       });
     } else {
-      throw new Error("create failed");
+      throw new Error("Error");
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong!",
       },
@@ -426,12 +420,12 @@ exports.UpdateReviewController = async (req, res) => {
     res.status(200).send({
       data: {
         id: req.params.id,
-        name: req.body.name,
+        msg: "Your review is updated",
       },
     });
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong",
       },
@@ -450,7 +444,7 @@ exports.GetReviewByUserController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "User not found",
+        msg: "Review is not found",
       });
     }
   } catch (error) {
@@ -473,7 +467,7 @@ exports.GetReviewByIdController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "id review not found",
+        msg: "Review is not found",
       });
     }
   } catch (error) {
@@ -545,7 +539,7 @@ exports.GetReviewByIdItemController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "id item not found",
+        msg: "Review is not found",
       });
     }
   } catch (error) {
@@ -557,5 +551,3 @@ exports.GetReviewByIdItemController = async (req, res) => {
     });
   }
 };
-
-//end line code for controller items review

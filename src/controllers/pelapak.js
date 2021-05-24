@@ -30,7 +30,7 @@ exports.CreatePelapakController = async (req, res) => {
             res.status(200).send({
                 data: {
                     id_pelapak: resultQuery[1].insertId,
-                    msg: "create pelapak success"
+                    msg: "your store is created!"
                 },
             });
         }
@@ -54,7 +54,7 @@ exports.GetDetailPelapakController = async (req, res) => {
             });
         } else {
             res.status(404).send({
-                msg: "id not found"
+                msg: "store is not found"
             });
         }
     } catch (error) {
@@ -89,7 +89,7 @@ exports.UpdatePelapakController = async (req, res) => {
         res.status(200).send({
             data: {
                 id: req.auth.id_user,
-                msg: "your data pelapak account is updated"
+                msg: "data account store is updated"
             },
         });
     } catch (error) {
@@ -103,7 +103,7 @@ exports.UpdatePelapakController = async (req, res) => {
 };
 
 exports.UpdateLogoContoller = async (req, res) => {
-    console.log(req.file);
+    // console.log(req.file);
     try {
         if (process.env.APP_ENV === 'development') {
             let webPath = req.file.path.replace(/\\/g, '/');
@@ -111,7 +111,7 @@ exports.UpdateLogoContoller = async (req, res) => {
             res.status(200).send({
                 data: {
                     lokasiFile: webPath,
-                    msg: "upload image is success"
+                    msg: "Image is uploaded"
                 }
             })
         } else {
@@ -123,7 +123,7 @@ exports.UpdateLogoContoller = async (req, res) => {
             res.status(200).send({
                 data: {
                     path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
-                    msg: "upload image is success"
+                    msg: "Image is uploaded"
                 }
             });
         }

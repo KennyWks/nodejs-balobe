@@ -30,11 +30,11 @@ exports.CreateCartsController = async (req, res) => {
         },
       });
     } else {
-      throw new Error("create failed");
+      throw new Error("Error");
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong!",
       },
@@ -100,7 +100,7 @@ exports.GetDetailCartsController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "id carts not found",
+        msg: "carts is not found",
       });
     }
   } catch (error) {
@@ -124,13 +124,13 @@ exports.UpdateCartsController = async (req, res) => {
     if (result) {
       res.status(200).send({
         data: {
-          msg: `Your carts with id ${req.params.id} is updated`,
+          msg: `your carts is updated`,
         },
       });
     } else {
-      res.status(202).send({
+      res.status(404).send({
         data: {
-          msg: `Carts with id ${reg.params.id} Not Exists`,
+          msg: `carts is not found`,
         },
       });
     }
@@ -156,14 +156,14 @@ exports.CheckOutContoller = async (req, res) => {
     if (result) {
       res.status(200).send({
         data: {
-          id: parseInt(req.params.id),
-          msg: `your transaction is success`,
+          id: req.params.id,
+          msg: `your transaction is successfully process`,
         },
       });
     } else {
-      res.status(202).send({
+      res.status(404).send({
         data: {
-          msg: `Carts with id ${reg.params.id} Not Exists`,
+          msg: `carts is not found`,
         },
       });
     }
