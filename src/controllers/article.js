@@ -29,11 +29,11 @@ exports.CreateArticleController = async (req, res) => {
         res.status(200).send({
           data: {
             id: resultQuery[1].insertId,
-            msg: "create article success"
+            msg: `Article with id ${resultQuery[1].insertId} succesfully created`
           },
         });
       } else {
-        throw new Error("create failed")
+        throw new Error("Error")
       }
     } else {
       const nameFileArticle = new Date().getTime();
@@ -46,20 +46,19 @@ exports.CreateArticleController = async (req, res) => {
         image: pathFile
       }
       const resultQuery = await CreateArticleModel(dataArticle);
-
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
       await data.save(req.file.buffer);
       res.status(200).send({
         data: {
           path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
-          msg: "upload image is success"
+          msg: "Image is uploaded"
         }
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong!"
       },
@@ -81,7 +80,6 @@ exports.GetAllArticleController = async (req, res) => {
         value: sortingValue[1] ? sortingValue[1].toUpperCase() : "ASC"
       };
     }
-
 
     if (req.query.q) {
       params.search = req.query.q
@@ -126,7 +124,7 @@ exports.GetDetailArticleController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "id article not found"
+        msg: `Article with id ${req.params.id} is not found`
       });
     }
   } catch (error) {
@@ -146,20 +144,20 @@ exports.DeleteArticleController = async (req, res) => {
     if (result[1].affectedRows) {
       res.status(200).send({
         data: {
-          id: parseInt(req.params.id),
-          msg: `ID article ${req.params.id} is succesfully deleted`,
+          id: req.params.id,
+          msg: `Article with id ${req.params.id} succesfully deleted`,
         }
       });
     } else {
-      res.status(202).send({
+      res.status(404).send({
         data: {
-          msg: `article with id ${reg.params.id} Not Exists`,
+          msg: `Article with id ${req.params.id} is not exist`
         }
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong",
       },
@@ -196,7 +194,7 @@ exports.UpdateArticleController = async (req, res) => {
         res.status(200).send({
           data: {
             id: req.params.id,
-            name: req.body.name
+            msg: `Article with id ${req.params.id} succesfully updated`,
           },
         });
       } else {
@@ -223,24 +221,24 @@ exports.UpdateArticleController = async (req, res) => {
           res.status(200).send({
             data: {
               path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
-              msg: "upload image is success"
+              msg: "Image is uplaoded"
             }
           });
         } else {
           res.status(200).send({
             data: {
-              msg: "data is updated"
+              msg: "Data is updated"
             }
           });
         }
       }
     } else {
-      throw new Error(`item with id ${req.params.id} is not found`)
+      throw new Error(`Article with id ${reg.params.id} is not found`)
     }
 
   } catch (error) {
     console.log(error);
-    res.status(202).send({
+    res.status(404).send({
       error: {
         msg: error.message || "something wrong",
       },

@@ -89,14 +89,14 @@ exports.SignupController = async (req, res) => {
             if (err) throw err;
             console.log('Email sent: ' + info.response);
         });
-        //email last line code
 
+        //email last line code
         res.status(201).send({
-            msg: "Your account is succesfully registered"
+            msg: "please check your email inbox for confirm"
         });
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -143,7 +143,7 @@ exports.ConfirmAccountController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -176,7 +176,7 @@ exports.LoginController = async (req, res) => {
                     res.status(200).send({
                         data: {
                             accesToken: token,
-                            msg: "Login success, welcome! " + dataUser.username
+                            msg: "Welcome! " + dataUser.username
                         }
                     });
                 } else {
@@ -190,7 +190,7 @@ exports.LoginController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -242,20 +242,20 @@ exports.ForgotPassController = async (req, res) => {
                 });
                 //email last line code
 
-                res.status(200).send({
+                res.status(201).send({
                     data: {
                         msg: "please check your email for link change password"
                     }
                 });
             } else {
-                throw new Error("Your account is not activate");
+                throw new Error("your account is not activate");
             }
         } else {
-            throw new Error("Your email is not exists in database");
+            throw new Error("your email is not exists in database");
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -300,7 +300,7 @@ exports.ConfirmPassController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -319,13 +319,13 @@ exports.ChangePasswordController = async (req, res) => {
         const result = await ChangePasswordModel(req.params.id, hashPassword);
         res.status(200).send({
             data: {
-                msg: "You password is updated"
+                msg: "your password is updated"
             }
         });
 
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },

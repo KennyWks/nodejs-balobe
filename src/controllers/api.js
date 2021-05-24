@@ -40,4 +40,3 @@ exports.GetAllCityData = (req, res) => {
             console.log(err);
         });
 };
-
