@@ -17,16 +17,15 @@ exports.CreateRoleController = async (req, res) => {
             res.status(200).send({
                 data: {
                     id: resultQuery[1].insertId,
-                    name: req.body.name,
-                    msg: "create role succes"
+                    msg: `Role with ${req.body.name} succesfully created`
                 },
             });
          } else {
-             throw new Error("create role failed")
+             throw new Error("Error!")
          }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -49,7 +48,6 @@ exports.GetAllRoleController = async (req, res) => {
             };
         }
 
-        
         if (req.query.q) {
             params.search = req.query.q
         }
@@ -88,14 +86,13 @@ exports.GetDetailRoleController = async (req, res) => {
     try {
         const result = await GetDetailRoleModel(req.params.id);
         console.log(result);
-        console.log(req.params.id);
         if (result[1][0]) {
             res.status(200).send({
                 data: result[1][0],
             });
         } else {
             res.status(404).send({
-                msg: "id role not found"
+                msg: `Role with id ${req.params.id} is not found`
             });
         }
     } catch (error) {
@@ -131,12 +128,12 @@ exports.UpdateRoleController = async (req, res) => {
         res.status(200).send({
             data: {
                 id: req.params.id,
-                name: req.body.name
+                msg: `Role with id ${req.params.id} is succesfully updated`
             },
         });
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -152,19 +149,19 @@ exports.DeleteRoleController = async (req, res) => {
             res.status(200).send({
                 data: {
                     id: parseInt(req.params.id),
-                    msg: `role id ${req.params.id} succesfuly deleted`,
+                    msg: `Role with id ${req.params.id} succesfully deleted`,
                 }
             });
         } else{
             res.status(202).send({
                 data: {
-                    msg: `role with id ${reg.params.id} Not Exists`,
+                    msg: `Role with id ${reg.params.id} is not exists`,
                 }
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(202).send({
+        res.status(404).send({
             error: {
                 msg: error.message || "something wrong",
             },
