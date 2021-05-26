@@ -4,6 +4,7 @@ const {
   GetDetailCartsModel,
   UpdateCartsModel,
   CheckOutModel,
+  CheckOutCheckedModel
 } = require("../models/carts");
 
 exports.CreateCartsController = async (req, res) => {
@@ -168,6 +169,28 @@ exports.CheckOutContoller = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
+    res.status(404).send({
+      error: {
+        msg: error.message || "something wrong",
+      },
+    });
+  }
+};
+
+exports.CheckOutCheckedController = async (req, res) => {
+  try {
+    if (!Object.keys(req.body).length > 0) {
+      throw new Error("Please add data to update");
+    }
+
+    const result = await CheckOutCheckedModel(req.body);
+          res.status(200).send({
+            data: {
+              msg: `your transaction is successfully process`,
+            },
+          });
+   } catch (error) {
     console.log(error);
     res.status(404).send({
       error: {

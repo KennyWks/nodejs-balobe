@@ -2,6 +2,19 @@ const {
     runQuery
 } = require("../config/db");
 
+exports.CreateTransactionModel = (id_user, list_item, total_item, total_price) => {
+  return new Promise((resolve, reject) => {
+    runQuery(`INSERT INTO transaction(id_user,list_item,total_item,total_price) values('${id_user}','${list_item}','${total_item}','${total_price}')`,
+      (err, result) => {
+        if (err) {
+          return reject(new Error(err));
+        }
+        return resolve(result);
+      } 
+  );
+  });
+};
+
 exports.GetDetailTransactionModel = (id) => {
     return new Promise((resolve, reject) => {
         runQuery(`SELECT * FROM transaction JOIN items ON items.id_item = transaction.list_item WHERE id=${id}`, (err, result) => {
@@ -34,7 +47,7 @@ exports.GetAllTransactionModel = (params) => {
             if (err) {
                 return reject(new Error(err));
             }
-            return resolve(result);
+            return resolve(result); 
         });
     });
 }

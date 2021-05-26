@@ -1,7 +1,34 @@
 const {
+  CreateTransactionModel,
   GetDetailTransactionModel,
   GetAllTransactionModel
   } = require("../models/transaction");
+
+
+exports.CreateTransactionController = async (req, res) => {
+  try {
+    if (!req.body) {
+      throw new Error("carts can't be empty");
+    }
+
+    for (let i = 0; i < req.body.length; i++) {
+      await CreateTransactionModel(req.auth.id_user, req.body[i].list_item, req.body[i].total_item, req.body[i].total_price);
+    }
+      res.status(200).send({
+        data: {
+          msg: `your transaction is successfully process`,
+        },
+      });
+    
+  } catch (error) {
+    console.log(error);
+    res.status(404).send({
+      error: {
+        msg: error.message || "something wrong!",
+      },
+    });
+  }
+};
 
   exports.GetDetailTransactionController = async (req, res) => {
     try {

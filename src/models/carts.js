@@ -64,7 +64,7 @@ exports.UpdateCartsModel = (id_carts, data) => {
     return new Promise((resolve, reject) => {
         runQuery(`SELECT * FROM carts WHERE id=${id_carts}`, (err, result) => {
             if (err || !result[1][0]) {
-                return reject(new Error(`carts with id : ${id_carts} not exists`));
+                return reject(new Error(`carts not exists`));
             }
             runQuery(`UPDATE carts SET total_item = ${data.total_item}, total_price = ${data.total_price} WHERE id = ${id_carts}`, (err, result) => {
                 if (err) {
@@ -80,7 +80,7 @@ exports.CheckOutModel = (id_carts, data) => {
     return new Promise((resolve, reject) => {
         runQuery(`SELECT * FROM carts WHERE id=${id_carts}`, (err, result) => {
             if (err || !result[1][0]) {
-                return reject(new Error(`carts with id : ${id_carts} not exists`));
+                return reject(new Error(`carts not exists`));
             } 
             runQuery(`UPDATE carts SET is_check_out = 1 WHERE id = ${id_carts}`, (err, result) => {
                 if (err) {
@@ -92,6 +92,22 @@ exports.CheckOutModel = (id_carts, data) => {
                     }
                     return resolve(result);
                 });
+            });
+        });
+    });
+}
+
+exports.CheckOutCheckedModel = (array_id) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`SELECT * FROM carts WHERE id IN (${array_id})`, (err, result) => {
+            if (err || !result[1][0]) {
+                return reject(new Error(`carts not exists`));
+            } 
+            runQuery(`UPDATE carts SET is_check_out = 1 WHERE id IN (${array_id})`, (err, result) => {
+                if (err) {
+                    return reject(new Error(err));
+                }                
+                return resolve(result);
             });
         });
     });
