@@ -4,7 +4,7 @@ const {
   GetDetailCartsModel,
   UpdateCartsModel,
   CheckOutModel,
-  CheckOutCheckedModel
+  CheckOutCheckedModel,
 } = require("../models/carts");
 
 exports.CreateCartsController = async (req, res) => {
@@ -19,6 +19,7 @@ exports.CreateCartsController = async (req, res) => {
       id_pelapak: req.body.id_pelapak,
       total_item: req.body.total_item,
       total_price: totalPrice,
+      courier: req.body.courier,
       is_check_out: 0,
     };
 
@@ -185,12 +186,12 @@ exports.CheckOutCheckedController = async (req, res) => {
     }
 
     const result = await CheckOutCheckedModel(req.body);
-          res.status(200).send({
-            data: {
-              msg: `your transaction is successfully process`,
-            },
-          });
-   } catch (error) {
+    res.status(200).send({
+      data: {
+        msg: `your transaction is successfully process`,
+      },
+    });
+  } catch (error) {
     console.log(error);
     res.status(404).send({
       error: {

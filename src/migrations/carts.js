@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS carts(
     id_pelapak INT(11) UNSIGNED,
     total_item INT(11) NOT NULL,    
     total_price INT(11) NOT NULL,    
+    courier INT(11) NOT NULL,    
     is_check_out INT(1) NOT NULL,    
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP
