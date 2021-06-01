@@ -117,6 +117,7 @@ exports.GetAllItemController = async (req, res) => {
     }
 
     const result = await GetAllItemModel(params);
+    console.log(result);
     console.log(result[1][0]);
     if (result) {
       const totalData = result[1][0].total;
