@@ -77,7 +77,7 @@ exports.GetAllItemPelapakModel = (params, id_pelapak) => {
 exports.GetDetailItemModel = (id_item) => {
   return new Promise((resolve, reject) => {
     runQuery(
-      "SELECT `items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name` as name_product, `items`.`price`, `items`.`quantity`, `items`.`weight`, `items`.`description`, `items`.`image`, `items`.`created_at`, `items`.`updated_at`, `category`.`hs_code`, `category`.`name` as name_category, `pelapak`.`name` as name_pelapak, `pelapak`.`logo`, `pelapak`.`description` as desc_pelapak, `pelapak`.`location` FROM items JOIN category ON `items`.`id_category` = `category`.`id_category` JOIN pelapak ON `items`.`id_pelapak` = `pelapak`.`id_pelapak` WHERE id_item = " +
+      "SELECT `items`.`id_item`, `items`.`id_pelapak`, `items`.`id_category`, `items`.`name` as name_product, `items`.`price`, `items`.`quantity`, `items`.`weight`, `items`.`description`, `items`.`image`, `items`.`created_at`, `items`.`updated_at`, `category`.`hs_code`, `category`.`name` as name_category, `pelapak`.`name` as name_pelapak, `pelapak`.`logo`, `pelapak`.`description` as desc_pelapak, `pelapak`.`id_location`, `pelapak`.`location` FROM items JOIN category ON `items`.`id_category` = `category`.`id_category` JOIN pelapak ON `items`.`id_pelapak` = `pelapak`.`id_pelapak` WHERE id_item = " +
         id_item,
       (err, result) => {
         if (err) {
