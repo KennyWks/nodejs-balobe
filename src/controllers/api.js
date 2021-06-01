@@ -13,7 +13,7 @@ exports.GetCostData = (req, res) => {
         .then(function (repos) {
             // console.log('User has %d repos', repos.length);
             res.status(200).send({
-                    data: repos
+                    data: JSON.parse(JSON.stringify(repos)) 
             });
         })
         .catch(function (err) {
