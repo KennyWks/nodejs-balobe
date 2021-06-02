@@ -2,9 +2,9 @@ const {
     runQuery
 } = require("../config/db");
 
-exports.CreateTransactionModel = (id_user, list_item, total_item, total_price) => {
+exports.CreateTransactionModel = (id_user, id_pelapak, list_item, total_item, courier, total_price) => {
   return new Promise((resolve, reject) => {
-    runQuery(`INSERT INTO transaction(id_user,list_item,total_item,total_price) values('${id_user}','${list_item}','${total_item}','${total_price}')`,
+    runQuery(`INSERT INTO transaction(id_user,id_pelapak,list_item,total_item,courier,total_price) values('${id_user}','${id_pelapak}','${list_item}','${total_item}','${courier}','${total_price}')`,
       (err, result) => {
         if (err) {
           return reject(new Error(err));

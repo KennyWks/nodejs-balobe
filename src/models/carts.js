@@ -95,7 +95,7 @@ exports.CheckOutModel = (id_carts, data) => {
             return reject(new Error(err));
           }
           runQuery(
-            `INSERT INTO transaction(id_user,list_item,total_item,total_price) values('${data.id_user}','${data.list_item}','${data.total_item}','${data.total_price}')`,
+            `INSERT INTO transaction(id_user,id_pelapak,list_item,total_item,courier,total_price) values('${data.id_user}','${data.id_pelapak},'${data.list_item}','${data.total_item}','${data.courier}','${data.total_price}')`,
             (err, result) => {
               if (err) {
                 return reject(new Error(err));

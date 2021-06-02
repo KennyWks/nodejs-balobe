@@ -150,8 +150,10 @@ exports.CheckOutContoller = async (req, res) => {
   try {
     const data = {
       id_user: req.auth.id_user,
+      id_pelapak: req.body.id_pelapak,
       list_item: req.body.list_item,
       total_item: req.body.total_item,
+      courier: req.body.courier,
       total_price: req.body.total_price,
     };
     const result = await CheckOutModel(req.params.id, data);

@@ -4,7 +4,6 @@ const {
   GetAllTransactionModel
   } = require("../models/transaction");
 
-
 exports.CreateTransactionController = async (req, res) => {
   try {
     if (!req.body) {
@@ -12,8 +11,9 @@ exports.CreateTransactionController = async (req, res) => {
     }
 
     for (let i = 0; i < req.body.length; i++) {
-      await CreateTransactionModel(req.auth.id_user, req.body[i].list_item, req.body[i].total_item, req.body[i].total_price);
+      await CreateTransactionModel(req.auth.id_user, req.body[i].id_pelapak, req.body[i].list_item, req.body[i].total_item, req.body[i].courier, req.body[i].total_price);
     }
+
       res.status(200).send({
         data: {
           msg: `your transaction is successfully process`,
