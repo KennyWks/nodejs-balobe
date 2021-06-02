@@ -10,7 +10,7 @@ const {
 
 exports.CreatePelapakController = async (req, res) => {
     try {
-        if (!req.body.name || !req.body.description || !req.body.location) {
+        if (!req.body.name || !req.body.description || !req.body.city|| !req.body.address) {
             throw new Error("Data pelapak can't be empty!")
         }
 
@@ -24,7 +24,8 @@ exports.CreatePelapakController = async (req, res) => {
                 name: req.body.name,
                 logo: "default.jpg",
                 description: req.body.description,
-                location: req.body.location,
+                city: req.body.city,
+                address: req.body.address,
             }
             const resultQuery = await CreatePelapakModel(data);
             res.status(200).send({
@@ -73,7 +74,7 @@ exports.UpdatePelapakController = async (req, res) => {
             throw new Error("Please add data to update");
         }
         const dataUpdate = {};
-        const fillAble = ['name', 'description', 'location'];
+        const fillAble = ['name', 'description', 'city', 'address'];
         fillAble.forEach((v) => {
             if (req.body[v]) {
                 dataUpdate[v] = req.body[v];

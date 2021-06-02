@@ -5,7 +5,7 @@ const {
 exports.CreatePelapakModel = (data) => {
     return new Promise((resolve, reject) => {
         runQuery(`
-INSERT INTO pelapak(id_owner, name, logo, description, location) values('${data.id_owner}','${data.name}', '${data.logo}', '${data.description}', '${data.location}')`, (err, result) => {
+INSERT INTO pelapak(id_owner, name, logo, description, city, address) values('${data.id_owner}','${data.name}', '${data.logo}', '${data.description}', '${data.city}', '${data.address}')`, (err, result) => {
             if (err) {
                 return reject(new Error(err));
             }

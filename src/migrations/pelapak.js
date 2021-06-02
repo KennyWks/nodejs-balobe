@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS pelapak(
     name TEXT NOT NULL,
     logo TEXT,
     description TEXT NOT NULL,
-    id_location INT(11) UNSIGNED,
-    location TEXT NOT NULL,
+    city INT(11) UNSIGNED,
+    address TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP
 )`;
