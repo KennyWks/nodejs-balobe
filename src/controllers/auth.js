@@ -15,7 +15,7 @@ const {
     UserModel,
     UserProfilesModel,
     CreateVcForConfirmModel,
-    GetUserDataLoginModel,
+    GetUserDataSigninModel,
     GetEmailSignupModel,
     CreateVcForForgetPassModel
 } = require("../models/auth");
@@ -151,12 +151,12 @@ exports.ConfirmAccountController = async (req, res) => {
     }
 }
 
-exports.LoginController = async (req, res) => {
+exports.SigninController = async (req, res) => {
     try {
         if (!req.body.username || !req.body.password) {
             throw new Error("username and password is required")
         }
-        const result = await GetUserDataLoginModel(req.body.username);
+        const result = await GetUserDataSigninModel(req.body.username);
 
         if (result[1].length > 0) {
             const dataUser = result[1][0];

@@ -187,7 +187,7 @@ INSERT INTO user_vc(id_user,verify_code,vc_for) values('${dataUserVC.id_user}', 
 };
 
 // check username if exist or not for login
-exports.GetUserDataLoginModel = (username) => {
+exports.GetUserDataSigninModel = (username) => {
     return new Promise((resolve, reject) => {
         runQuery(`
 SELECT * FROM users WHERE username='${username}'`, (err, result) => {

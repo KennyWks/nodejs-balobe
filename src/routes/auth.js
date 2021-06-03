@@ -1,7 +1,7 @@
 const AuthRouter = require("express").Router();
 const {
     SignupController,
-    LoginController,
+    SigninController,
     ConfirmAccountController,
     ConfirmPassController,
     ForgotPassController,
@@ -9,7 +9,7 @@ const {
 } = require('../controllers/auth');
 
 AuthRouter.post("/signup", SignupController);
-AuthRouter.post("/login", LoginController);
+AuthRouter.post("/login", SigninController);
 AuthRouter.get("/confirmAccount", ConfirmAccountController);
 AuthRouter.post("/forgotPass", ForgotPassController);
 AuthRouter.get("/confirmPass", ConfirmPassController);
