@@ -23,17 +23,25 @@ const {
 exports.SignupController = async (req, res) => {
     try {
         if (!req.body.username || !req.body.password || !req.body.fullname || !req.body.gender || !req.body.address || !req.body.phone) {
-            throw new Error("Your data form can't be empty")
+            throw new Error("Your data form can't be empty");
         }
 
         const checkUsername = await GetUsernameSignupModel(req.body.username);
         if (checkUsername[1].length > 0) {
-            throw new Error("Username is found, try other username");
+            res.status(404).send({
+                error: {
+                    msg: "Username is found, try other username"
+                },
+            });
         }
 
         const dataEmail = await GetEmailSignupModel(req.body.email);
         if (dataEmail[1].length > 0) {
-            throw new Error("Email is found, try other email");
+            res.status(404).send({
+                error: {
+                    msg: "Email is found, try other email"
+                },
+            });
         }
 
         const hashPassword = bcrypt.hashSync(req.body.password);
