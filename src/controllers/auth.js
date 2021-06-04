@@ -156,7 +156,7 @@ exports.SigninController = async (req, res) => {
         if (!req.body.username || !req.body.password) {
             throw new Error("username and password is required")
         }
-        const result = await GetUserDataSigninModel(req.body.username);
+        const result = await GetUserDataSigninMode(req.body.username);
 
         if (result[1].length > 0) {
             const dataUser = result[1][0];
@@ -202,7 +202,7 @@ exports.SigninController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong!"
             },
