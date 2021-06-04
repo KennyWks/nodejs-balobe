@@ -12,17 +12,17 @@ const {
     ExpiredLinkConfirmAccoutModel,
     ExpiredLinkUpdatePassModel,
     ChangePasswordModel,
-    UserModel,
-    UserProfilesModel,
-    CreateVcForConfirmModel,
+    CreateUserModel,
+    CreateUserProfilesModel,
+    CreateTokenForConfirmModel,
     GetUserDataSigninModel,
     GetEmailSignupModel,
-    CreateVcForForgetPassModel
+    CreateTokenForForgetPassModel
 } = require("../models/auth");
 
 exports.SignupController = async (req, res) => {
     try {
-        if (!req.body.username || !req.body.password || !req.body.fullname || !req.body.address || !req.body.phone) {
+        if (!req.body.username || !req.body.password || !req.body.fullname || !req.body.gender || !req.body.address || !req.body.phone) {
             throw new Error("Your data form can't be empty")
         }
 
@@ -31,8 +31,8 @@ exports.SignupController = async (req, res) => {
             throw new Error("Username is found, try other username");
         }
 
-        const checkEmail = await GetEmailSignupModel(req.body.email);
-        if (checkEmail[1].length > 0) {
+        const dataEmail = await GetEmailSignupModel(req.body.email);
+        if (dataEmail[1].length > 0) {
             throw new Error("Email is found, try other email");
         }
 
@@ -43,7 +43,7 @@ exports.SignupController = async (req, res) => {
             status: 0,
             role_id: req.body.role_id,
         }
-        const resultUser = await UserModel(dataUser);
+        const resultUser = await CreateUserModel(dataUser);
 
         const dataUserProfiles = {
             id_user: resultUser[1].insertId,
@@ -55,7 +55,7 @@ exports.SignupController = async (req, res) => {
             phone: req.body.phone,
             balance: req.body.balance
         }
-        const resultUserProfiles = await UserProfilesModel(dataUserProfiles);
+        await CreateUserProfilesModel(dataUserProfiles);
 
         const hashUsername = bcrypt.hashSync(req.body.username);
         const dataUserVC = {
@@ -63,7 +63,7 @@ exports.SignupController = async (req, res) => {
             verify_code: hashUsername,
             vc_for: 1
         }
-        const resultUserVC = await CreateVcForConfirmModel(dataUserVC);
+        await CreateTokenForConfirmModel(dataUserVC);
 
         //email firts line code
         const userGmail = 'desa.oelatimo@gmail.com';
@@ -82,7 +82,7 @@ exports.SignupController = async (req, res) => {
             from: userGmail,
             to: dataUserProfiles.email,
             subject: 'Confirm Account',
-            html: `<p>Klik this <a href="${process.env.APP_ENV === "development" ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/confirmAccount?id_user=${id_user}&verify_code=${encodeURI(hashUsername)}">link</a> for confirm</p>`
+            html: `<p>Click this <a href="${process.env.APP_ENV === "development" ? 'http://localhost:5000' : 'https://balobe.herokuapp.com'}/auth/confirmAccount?id_user=${id_user}&verify_code=${encodeURI(hashUsername)}">link</a> for confirm</p>`
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
@@ -92,13 +92,14 @@ exports.SignupController = async (req, res) => {
 
         //email last line code
         res.status(201).send({
-            msg: "please check your email inbox for confirm"
+            msg: "Please check your email inbox for confirm"
         });
+
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -107,12 +108,12 @@ exports.SignupController = async (req, res) => {
 exports.ConfirmAccountController = async (req, res) => {
     try {
         if (!req.query.id_user || !req.query.verify_code) {
-            throw new Error("your link is not valid")
+            throw new Error("Your link is not valid")
         }
 
         //cehck id_user is empty or not
-        const id_user = await GetIdUserModel(req.query.id_user);
-        if (id_user[1].length > 0) {
+        const user = await GetIdUserModel(req.query.id_user);
+        if (user[1].length > 0) {
 
             // check verify code is not empty and vc_for = 1
             const verifyCode = await GetVerifyCodeAccountModel(req.query.verify_code);
@@ -128,24 +129,36 @@ exports.ConfirmAccountController = async (req, res) => {
                     const result1 = await FinishConfirmAccountModel(req.query.id_user);
                     res.status(200).send({
                         data: {
-                            msg: "your account is confirm"
+                            msg: "Your account is confirm"
                         }
                     });
                 } else {
-                    const result2 = await ExpiredLinkConfirmAccoutModel(req.query.id_user);
-                    throw new Error("your link is expired");
+                    await ExpiredLinkConfirmAccoutModel(req.query.id_user);
+                    res.status(404).send({
+                        error: {
+                            msg: "Your link is expired"
+                        },
+                    });
                 }
             } else {
-                throw new Error("your verify code is invalid");
+                res.status(404).send({
+                    error: {
+                        msg: "Your verify code is invalid"
+                    },
+                });
             }
         } else {
-            throw new Error("your account is not defined");
+            res.status(404).send({
+                error: {
+                    msg: "Your account is not defined"
+                },
+            });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -154,7 +167,7 @@ exports.ConfirmAccountController = async (req, res) => {
 exports.SigninController = async (req, res) => {
     try {
         if (!req.body.username || !req.body.password) {
-            throw new Error("username and password is required")
+            throw new Error("Username and password is required")
         }
         const result = await GetUserDataSigninModel(req.body.username);
 
@@ -182,21 +195,21 @@ exports.SigninController = async (req, res) => {
                 } else {
                     res.status(404).send({
                         error: {
-                            msg: "username or password is wrong"
+                            msg: "Username or password is not valid"
                         }
                     });
                 }
             } else {
                 res.status(404).send({
                     error: {
-                        msg: "your account is not activate"
+                        msg: "Your account is not activate"
                     }
                 });
             }
         } else {
             res.status(404).send({
                 error: {
-                    msg: "your account is not defined"
+                    msg: "Your account is not defined"
                 }
             });
         }
@@ -204,7 +217,7 @@ exports.SigninController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -213,20 +226,20 @@ exports.SigninController = async (req, res) => {
 exports.ForgotPassController = async (req, res) => {
     try {
         if (!req.body.email) {
-            throw new Error("email is required")
+            throw new Error("Email is required")
         }
 
-        const checkEmail = await GetEmailSignupModel(req.body.email);
-        if (checkEmail[1].length > 0) {
-            if (checkEmail[1][0].status === 1) {
+        const dataEmail = await GetEmailSignupModel(req.body.email);
+        if (dataEmail[1].length > 0) {
+            if (dataEmail[1][0].status === 1) {
                 
-                const hashEmail = bcrypt.hashSync(checkEmail[1][0].email);
+                const hashEmail = bcrypt.hashSync(dataEmail[1][0].email);
                 const dataUserVC = {
-                    id_user: checkEmail[1][0].id_user,
+                    id_user: dataEmail[1][0].id_user,
                     verify_code: hashEmail,
                     vc_for: 2
                 }
-                const result = await CreateVcForForgetPassModel(dataUserVC);
+                await CreateTokenForForgetPassModel(dataUserVC);
 
                 //email firts line code
                 const userGmail = 'desa.oelatimo@gmail.com';
@@ -240,12 +253,12 @@ exports.ForgotPassController = async (req, res) => {
                     }
                 });
 
-                const id_user = checkEmail[1][0].id_user;
+                const idUser = dataEmail[1][0].id_user;
                 const mailOptions = {
                     from: userGmail,
                     to: req.body.email,
                     subject: 'Change Password',
-                    html: `<p>Klik this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/confirmPass?id_user=${id_user}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
+                    html: `<p>Click this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : 'https://balobe.herokuapp.com'}/auth/confirmPass?id_user=${idUser}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
                 };
 
                 transporter.sendMail(mailOptions, (err, info) => {
@@ -256,20 +269,28 @@ exports.ForgotPassController = async (req, res) => {
 
                 res.status(201).send({
                     data: {
-                        msg: "please check your email for link change password"
+                        msg: "Please check your email for link change password"
                     }
                 });
             } else {
-                throw new Error("your account is not activate");
+                res.status(404).send({
+                    data: {
+                        msg: "Your account is not activate"
+                    }
+                });
             }
         } else {
-            throw new Error("your email is not found");
+            res.status(404).send({
+                data: {
+                    msg: "Your email is not found"
+                }
+            });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -278,14 +299,13 @@ exports.ForgotPassController = async (req, res) => {
 exports.ConfirmPassController = async (req, res) => {
     try {
         if (!req.query.id_user || !req.query.verify_code) {
-            throw new Error("your link is invalid")
+            throw new Error("Your link is invalid")
         }
 
-        const result = await GetIdUserModel(req.query.id_user);
-        if (result[1].length > 0) {
+        const dataUser = await GetIdUserModel(req.query.id_user);
+        if (dataUser[1].length > 0) {
 
             const verifyCode = await GetVerifyCodePassModel(req.query.verify_code);
-
             if (verifyCode[1].length > 0) {
 
                 let createdDate = Date.parse(verifyCode[1][0].created_at);
@@ -297,24 +317,36 @@ exports.ConfirmPassController = async (req, res) => {
                 if ((today.getTime() - createdDate) < limitDateConfirm) {
                     res.status(200).send({
                         data: {
-                            link: `${process.env.APP_ENV === 'development' ? 'http://localhost:6000' : 'https://balobe.herokuapp.com'}/auth/updatePass/${req.query.id_user}`
+                            link: `${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : 'https://balobe.herokuapp.com'}/auth/updatePass/${req.query.id_user}`
                         }
                     });
                 } else {
-                    const delExpiredPassLink = await ExpiredLinkUpdatePassModel(req.query.id_user);
-                    throw new Error("your link is expired");
+                    await ExpiredLinkUpdatePassModel(req.query.id_user);
+                    res.status(404).send({
+                        data: {
+                            msg: "Your link is expired"
+                        }
+                    });
                 }
             } else {
-                throw new Error("your verify code is invalid");
+                res.status(404).send({
+                    data: {
+                        msg: "Your verify code is invalid"
+                    }
+                });
             }
         } else {
-            throw new Error("your account is defined");
+            res.status(404).send({
+                error: {
+                    msg: "Your account is not defined"
+                },
+            });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -324,14 +356,14 @@ exports.ChangePasswordController = async (req, res) => {
     try {
 
         if (!req.body.password) {
-            throw new Error("please input your new password")
+            throw new Error("Please input your new password")
         }
 
         const hashPassword = bcrypt.hashSync(req.body.password);
-        const result = await ChangePasswordModel(req.params.id, hashPassword);
+        await ChangePasswordModel(req.params.id, hashPassword);
         res.status(200).send({
             data: {
-                msg: "your password is updated"
+                msg: "Your password is updated"
             }
         });
 

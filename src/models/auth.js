@@ -135,7 +135,7 @@ exports.ChangePasswordModel = (id_user, hashPassword) => {
 
 
 //insert data for table user
-exports.UserModel = (dataUser) => {
+exports.CreateUserModel = (dataUser) => {
     return new Promise((resolve, reject) => {
         runQuery(`
 INSERT INTO users(username,password,status,role_id) values('${dataUser.username}', '${dataUser.password}', '${dataUser.status}',  '${dataUser.role_id}')`, (err, result) => {
@@ -148,7 +148,7 @@ INSERT INTO users(username,password,status,role_id) values('${dataUser.username}
 };
 
 //insert data for table user profiles
-exports.UserProfilesModel = (dataUserProfiles) => {
+exports.CreateUserProfilesModel = (dataUserProfiles) => {
     return new Promise((resolve, reject) => {
         runQuery(`
 INSERT INTO user_profiles(id_user,fullname,gender,picture,address,email,phone,balance) values('${dataUserProfiles.id_user}', '${dataUserProfiles.fullname}', '${dataUserProfiles.gender}',  '${dataUserProfiles.picture}',  '${dataUserProfiles.address}',  '${dataUserProfiles.email}',  '${dataUserProfiles.phone}',  '${dataUserProfiles.balance}')`, (err, result) => {
@@ -161,7 +161,7 @@ INSERT INTO user_profiles(id_user,fullname,gender,picture,address,email,phone,ba
 };
 
 //insert data for table verify code (confirm account)
-exports.CreateVcForConfirmModel = (dataUserVC) => {
+exports.CreateTokenForConfirmModel = (dataUserVC) => {
     return new Promise((resolve, reject) => {
         runQuery(`
 INSERT INTO user_vc(id_user,verify_code,vc_for) values('${dataUserVC.id_user}', '${dataUserVC.verify_code}', '${dataUserVC.vc_for}')`, (err, result) => {
@@ -174,7 +174,7 @@ INSERT INTO user_vc(id_user,verify_code,vc_for) values('${dataUserVC.id_user}', 
 };
 
 //insert data for table verify code (forgot password)
-exports.CreateVcForForgetPassModel = (dataUserVC) => {
+exports.CreateTokenForForgetPassModel = (dataUserVC) => {
     return new Promise((resolve, reject) => {
         runQuery(`
 INSERT INTO user_vc(id_user,verify_code,vc_for) values('${dataUserVC.id_user}', '${dataUserVC.verify_code}', '${dataUserVC.vc_for}')`, (err, result) => {
