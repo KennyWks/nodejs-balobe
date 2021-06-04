@@ -85,12 +85,13 @@ exports.SignupController = async (req, res) => {
             }
         });
 
+        const urlApp = 'http://localhost:3000'; // -> https://balobe.herokuapp.com or domain google
         const id_user = resultUser[1].insertId;
         const mailOptions = {
             from: userGmail,
             to: dataUserProfiles.email,
             subject: 'Confirm Account',
-            html: `<p>Click this <a href="${process.env.APP_ENV === "development" ? 'http://localhost:5000' : 'https://balobe.herokuapp.com'}/auth/confirmAccount?id_user=${id_user}&verify_code=${encodeURI(hashUsername)}">link</a> for confirm</p>`
+            html: `<p>Click this <a href="${process.env.APP_ENV === "development" ? 'http://localhost:5000' : urlApp}/auth/confirmAccount?id_user=${id_user}&verify_code=${encodeURI(hashUsername)}">link</a> for confirm</p>`
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
@@ -134,7 +135,7 @@ exports.ConfirmAccountController = async (req, res) => {
 
                 // check link is expired or not
                 if ((today.getTime() - createdDate) < limitDateConfirm) {
-                    const result1 = await FinishConfirmAccountModel(req.query.id_user);
+                    await FinishConfirmAccountModel(req.query.id_user);
                     res.status(200).send({
                         data: {
                             msg: "Your account is confirm"
@@ -260,13 +261,13 @@ exports.ForgotPassController = async (req, res) => {
                         pass: passGmail
                     }
                 });
-
+                const urlApp = 'http://localhost:3000'; // -> https://balobe.herokuapp.com or domain google
                 const idUser = dataEmail[1][0].id_user;
                 const mailOptions = {
                     from: userGmail,
                     to: req.body.email,
                     subject: 'Change Password',
-                    html: `<p>Click this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : 'https://balobe.herokuapp.com'}/auth/confirmPass?id_user=${idUser}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
+                    html: `<p>Click this <a href="${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : urlApp}/auth/confirmPass?id_user=${idUser}&verify_code=${encodeURI(hashEmail)}">link</a> for change your password</p>`
                 };
 
                 transporter.sendMail(mailOptions, (err, info) => {
