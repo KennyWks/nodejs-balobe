@@ -198,3 +198,13 @@ SELECT * FROM users WHERE username='${username}'`, (err, result) => {
         });
     });
 };
+
+exports.FinishConfirmChangePassModel = (id_user) => {
+    return new Promise((resolve, reject) => {
+        runQuery(`DELETE FROM user_vc WHERE id_user=${id_user} AND vc_for=2`, (err, result) => {
+            if (err) {
+                return reject(new Error(err));
+            }
+        });
+    });
+}

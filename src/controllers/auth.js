@@ -17,7 +17,8 @@ const {
     CreateTokenForConfirmModel,
     GetUserDataSigninModel,
     GetEmailSignupModel,
-    CreateTokenForForgetPassModel
+    CreateTokenForForgetPassModel,
+    FinishConfirmChangePassModel
 } = require("../models/auth");
 
 exports.SignupController = async (req, res) => {
@@ -328,6 +329,7 @@ exports.ConfirmPassController = async (req, res) => {
                 // check link is expired or not
                 if ((today.getTime() - createdDate) < limitDateConfirm) {
                     const urlApp = 'http://localhost:3000'; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
+                    await FinishConfirmChangePassModel(req.query.id_user);
                     res.status(200).send({
                         data: {
                             link: `${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : urlApp}/auth/updatePass/${req.query.id_user}`
