@@ -2,9 +2,11 @@ const transactionTable = `
 CREATE TABLE IF NOT EXISTS transaction(
     id INT(11) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     id_user INT(11) UNSIGNED,
+    id_pelapak INT(11) UNSIGNED,
     list_item INT(11) UNSIGNED,
     total_item INT(11) NOT NULL,    
     total_price INT(11) NOT NULL,    
+    courier INT(11) NOT NULL,    
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`;
 
