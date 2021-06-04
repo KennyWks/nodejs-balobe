@@ -173,7 +173,7 @@ exports.SigninController = async (req, res) => {
                             expiresIn: "1D"
                         }
                     );
-                    res.status(200).send({
+                    res.status(201).send({
                         data: {
                             accesToken: token,
                             msg: "Welcome! " + dataUser.username
@@ -187,14 +187,14 @@ exports.SigninController = async (req, res) => {
                     });
                 }
             } else {
-                res.status(401).send({
+                res.status(404).send({
                     error: {
                         msg: "your account is not activate"
                     }
                 });
             }
         } else {
-            res.status(401).send({
+            res.status(404).send({
                 error: {
                     msg: "your account is not defined"
                 }
