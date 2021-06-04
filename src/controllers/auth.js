@@ -85,7 +85,7 @@ exports.SignupController = async (req, res) => {
             }
         });
 
-        const urlApp = 'http://localhost:3000'; // -> https://balobe.herokuapp.com or domain google
+        const urlApp = 'http://localhost:3000'; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
         const id_user = resultUser[1].insertId;
         const mailOptions = {
             from: userGmail,
@@ -100,8 +100,11 @@ exports.SignupController = async (req, res) => {
         });
 
         //email last line code
+        
         res.status(201).send({
-            msg: "Please check your email inbox for confirm"
+            data: {
+                msg: "Please check your email inbox for confirm"
+            }
         });
 
     } catch (error) {
@@ -261,7 +264,7 @@ exports.ForgotPassController = async (req, res) => {
                         pass: passGmail
                     }
                 });
-                const urlApp = 'http://localhost:3000'; // -> https://balobe.herokuapp.com or domain google
+                const urlApp = 'http://localhost:3000'; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
                 const idUser = dataEmail[1][0].id_user;
                 const mailOptions = {
                     from: userGmail,
@@ -283,14 +286,14 @@ exports.ForgotPassController = async (req, res) => {
                 });
             } else {
                 res.status(404).send({
-                    data: {
+                    error: {
                         msg: "Your account is not activate"
                     }
                 });
             }
         } else {
             res.status(404).send({
-                data: {
+                error: {
                     msg: "Your email is not found"
                 }
             });
@@ -324,22 +327,23 @@ exports.ConfirmPassController = async (req, res) => {
 
                 // check link is expired or not
                 if ((today.getTime() - createdDate) < limitDateConfirm) {
+                    const urlApp = 'http://localhost:3000'; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
                     res.status(200).send({
                         data: {
-                            link: `${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : 'https://balobe.herokuapp.com'}/auth/updatePass/${req.query.id_user}`
+                            link: `${process.env.APP_ENV === 'development' ? 'http://localhost:5000' : urlApp}/auth/updatePass/${req.query.id_user}`
                         }
                     });
                 } else {
                     await ExpiredLinkUpdatePassModel(req.query.id_user);
                     res.status(404).send({
-                        data: {
+                        error: {
                             msg: "Your link is expired"
                         }
                     });
                 }
             } else {
                 res.status(404).send({
-                    data: {
+                    error: {
                         msg: "Your verify code is invalid"
                     }
                 });
