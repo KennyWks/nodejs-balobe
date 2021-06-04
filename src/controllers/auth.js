@@ -180,13 +180,25 @@ exports.SigninController = async (req, res) => {
                         }
                     });
                 } else {
-                    throw new Error("username or password is wrong");
+                    res.status(404).send({
+                        error: {
+                            msg: "username or password is wrong"
+                        }
+                    });
                 }
             } else {
-                throw new Error("your account is not activate");
+                res.status(401).send({
+                    error: {
+                        msg: "your account is not activate"
+                    }
+                });
             }
         } else {
-            throw new Error("your account is not defined");
+            res.status(401).send({
+                error: {
+                    msg: "your account is not defined"
+                }
+            });
         }
     } catch (error) {
         console.log(error);
