@@ -11,21 +11,18 @@ exports.CreateRoleController = async (req, res) => {
         if (!req.body.name) {
              throw new Error("field name is required")
          }
-         const resultQuery = await CreateRoleModel(req.body.name);
-         console.log(resultQuery);
-         if (resultQuery) {
-            res.status(200).send({
+         const result = await CreateRoleModel(req.body.name);
+         console.log(result);
+            res.status(201).send({
                 data: {
-                    id: resultQuery[1].insertId,
-                    msg: `Role with id ${req.body.name} succesfully created`
+                    id: result[1].insertId,
+                    msg: `Role succesfully created with id ${resultQuery[1].insertId}`
                 },
             });
-         } else {
-             throw new Error("Error!")
-         }
+
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -73,7 +70,7 @@ exports.GetAllRoleController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -92,12 +89,14 @@ exports.GetDetailRoleController = async (req, res) => {
             });
         } else {
             res.status(404).send({
-                msg: `Role with id ${req.params.id} is not found`
+                error: {
+                    msg: `Role with id ${req.params.id} is not found`
+                },
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -119,10 +118,6 @@ exports.UpdateRoleController = async (req, res) => {
             }
         });
 
-        if (!Object.keys(dataUpdate).length > 0) {
-            throw new Error("Please add data to update");
-        }
-
         const result = await UpdateRoleModel(req.params.id, dataUpdate);
         console.log(result);
         res.status(200).send({
@@ -133,7 +128,7 @@ exports.UpdateRoleController = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -153,15 +148,15 @@ exports.DeleteRoleController = async (req, res) => {
                 }
             });
         } else{
-            res.status(202).send({
-                data: {
+            res.status(404).send({
+                error: {
                     msg: `Role with id ${reg.params.id} is not exists`,
-                }
+                },
             }); 
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },

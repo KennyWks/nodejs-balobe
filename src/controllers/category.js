@@ -11,11 +11,11 @@ exports.CreateCategoryController = async (req, res) => {
         if (!req.body.name || !req.body.hs_code) {
             throw new Error("field name or HS code is required")
         }
-        const resultQuery = await CreateCategoryModel(req.body.hs_code,req.body.name);
+        const result = await CreateCategoryModel(req.body.hs_code,req.body.name);
             res.status(201).send({
                 data: {
-                    id: resultQuery[1].insertId,
-                    msg: `Category with id ${resultQuery[1].insertId} succesfully created`
+                    id: result[1].insertId,
+                    msg: `Category with id ${result[1].insertId} succesfully created`
                 },
             });
     } catch (error) {

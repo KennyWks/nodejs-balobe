@@ -7,25 +7,24 @@ const {
 
 exports.CreateTransactionController = async (req, res) => {
   try {
-    if (!req.body) {
-      throw new Error("carts can't be empty");
+    if (!Object.keys(req.body).length > 0) {
+      throw new Error("Please add some item to carts");
     }
 
     for (let i = 0; i < req.body.length; i++) {
       await CreateTransactionModel(req.auth.id_user, req.body[i].id_pelapak, req.body[i].list_item, req.body[i].total_item, req.body[i].courier, req.body[i].total_price);
     }
 
-      res.status(200).send({
-        data: {
-          msg: `your transaction is successfully process`,
-        },
-      });
-    
+    res.status(201).send({
+      data: {
+        msg: `Your transaction is successfully process`,
+      },
+    });    
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong!",
+        msg: error.message || "Something wrong!",
       },
     });
   }
@@ -41,14 +40,16 @@ exports.CreateTransactionController = async (req, res) => {
         });
       } else {
         res.status(404).send({
-          msg: "data transaction is not found",
-        });
+          error: {
+            msg: "Data transaction is not found",
+          }
+      });
       }
     } catch (error) {
       console.log(error);
-      res.status(404).send({
+      res.status(500).send({
         error: {
-          msg: error.message || "something wrong",
+          msg: error.message || "Something wrong",
         },
       });
     }
@@ -95,9 +96,9 @@ exports.CreateTransactionController = async (req, res) => {
       }
   } catch (error) {
       console.log(error);
-      res.status(404).send({
+      res.status(500).send({
           error: {
-              msg: error.message || "something wrong",
+              msg: error.message || "Something wrong",
           },
       });
   }
@@ -144,9 +145,9 @@ exports.CreateTransactionController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }
