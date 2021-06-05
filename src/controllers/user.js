@@ -34,12 +34,12 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
         });
       }
 
-      const resultUpdate = await UpdateImageProfileUserModel(
+      await UpdateImageProfileUserModel(
         webPath,
         req.auth.id_user
       );
 
-      res.status(200).send({
+      res.status(201).send({
         data: {
           id_user: req.auth.id_user,
           lokasiFile: webPath,
@@ -50,15 +50,16 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
       const pathFile = `img-users/${req.auth.id_user}.${
         req.file.mimetype.split("/")[1]
       }`;
-      const resultUpdate = await UpdateImageProfileUserModel(
+      await UpdateImageProfileUserModel(
         pathFile,
         req.auth.id_user
       );
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
       await data.save(req.file.buffer);
-      res.status(200).send({
+      res.status(201).send({
         data: {
+          id_user: req.auth.id_user,
           path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(
             pathFile
           )}?alt=media`,
@@ -68,7 +69,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
         msg: error.message || "Something wrong",
       },
@@ -90,23 +91,19 @@ exports.UpdateProfileUserContoller = async (req, res) => {
       }
     });
 
-    if (!Object.keys(dataUpdate).length > 0) {
-      throw new Error("Please add data to update");
-    }
-
     const result = await UpdateProfileUserModel(req.auth.id_user, dataUpdate);
     console.log(result);
     res.status(200).send({
       data: {
         id_user: req.auth.id_user,
-        msg: "your data is updated",
+        msg: "Your data is updated",
       },
     });
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -115,21 +112,23 @@ exports.UpdateProfileUserContoller = async (req, res) => {
 exports.GetUserController = async (req, res) => {
   try {
     const result = await GetDataUserProfiles(req.params.id);
-    // console.log(req.params.id);
+    // console.log(result);
     if (result[1][0]) {
       res.status(200).send({
         data: result[1][0],
       });
     } else {
       res.status(404).send({
-        msg: "user account is not found",
+        error: {
+          msg: "User account is not found",
+        },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -175,9 +174,9 @@ exports.GetAllUserController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
