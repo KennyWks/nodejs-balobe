@@ -16,7 +16,7 @@ exports.CreateRoleController = async (req, res) => {
          res.status(201).send({
             data: {
                 id: result[1].insertId,
-                msg: `Role succesfully created with id ${resultQuery[1].insertId}`
+                msg: `Role succesfully created with id ${result[1].insertId}`
             },
          });
 
