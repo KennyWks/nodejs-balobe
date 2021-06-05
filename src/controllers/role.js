@@ -13,12 +13,12 @@ exports.CreateRoleController = async (req, res) => {
          }
          const result = await CreateRoleModel(req.body.name);
          console.log(result);
-            res.status(201).send({
-                data: {
-                    id: result[1].insertId,
-                    msg: `Role succesfully created with id ${resultQuery[1].insertId}`
-                },
-            });
+         res.status(201).send({
+            data: {
+                id: result[1].insertId,
+                msg: `Role succesfully created with id ${resultQuery[1].insertId}`
+            },
+         });
 
     } catch (error) {
         console.log(error);
