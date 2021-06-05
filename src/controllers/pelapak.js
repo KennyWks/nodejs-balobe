@@ -22,7 +22,7 @@ exports.CreatePelapakController = async (req, res) => {
             const data = {
                 id_owner: req.auth.id_user,
                 name: req.body.name,
-                logo: "default.jpg",
+                logo: "img-users/default.jpg",
                 description: req.body.description,
                 city: req.body.city,
                 address: req.body.address,
