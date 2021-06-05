@@ -8,7 +8,7 @@ const {
     DeleteCategoryController
 } = require("../controllers/category");
 
-// CategoryRouter.post("/", CreateCategory);
+// CategoryRouter.post("/", CreateCategory); 
 CategoryRouter.post("/", AuthAdmin, CreateCategoryController);
 CategoryRouter.get("/", GetAllCategoryController);
 CategoryRouter.get("/:id", GetDetailCategoryController);

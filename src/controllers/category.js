@@ -12,20 +12,15 @@ exports.CreateCategoryController = async (req, res) => {
             throw new Error("field name or HS code is required")
         }
         const resultQuery = await CreateCategoryModel(req.body.hs_code,req.body.name);
-        console.log(resultQuery);
-        if (resultQuery) {
-            res.status(200).send({
+            res.status(201).send({
                 data: {
                     id: resultQuery[1].insertId,
                     msg: `Category with id ${resultQuery[1].insertId} succesfully created`
                 },
             });
-        } else {
-            throw new Error("Error")
-        }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong!"
             },
@@ -73,7 +68,7 @@ exports.GetAllCategoryController = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -91,12 +86,14 @@ exports.GetDetailCategoryController = async (req, res) => {
             });
         } else {
             res.status(404).send({
-                msg: `Category with id ${req.params.id} is not found`
+                error: {
+                    msg: `Category with id ${req.params.id} is not found`
+                },
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -117,14 +114,14 @@ exports.DeleteCategoryController = async (req, res) => {
             });
         } else{
             res.status(404).send({
-                data: {
+                error: {
                     msg: `Category with id ${req.params.id} is not found`
                 }
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
@@ -145,10 +142,6 @@ exports.UpdateCategoryController = async (req, res) => {
                 dataUpdate[v] = req.body[v];
             }
         });
-
-        if (!Object.keys(dataUpdate).length > 0) {
-            throw new Error("Please add data to update");
-        }
 
         const result = await UpdateCategoryModel(req.params.id, dataUpdate);
         console.log(result);
