@@ -58,7 +58,7 @@ exports.SignupController = async (req, res) => {
             id_user: resultUser[1].insertId,
             fullname: req.body.fullname,
             gender: req.body.gender,
-            picture: "img-users/default.jpg",
+            picture: "img-users/default.png",
             address: req.body.address,
             email: req.body.email,
             phone: req.body.phone,

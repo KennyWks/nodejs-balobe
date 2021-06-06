@@ -17,7 +17,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
       let webPath = req.file.path.replace(/\\/g, "/");
 
       if (
-        imageOld !== "uploads/img-users/default.jpg" &&
+        imageOld !== "uploads/img-users/default.png" &&
         imageOld !== webPath
       ) {
         let deleteImage = "./" + imageOld;
