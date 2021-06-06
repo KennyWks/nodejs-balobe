@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "./uploads/img-item");
+        cb(null, "./uploads/img-items");
     },
     filename: (req, file, cb) => {
         cb(null, new Date().getTime() + '.' + file.mimetype.split('/')[1]);
