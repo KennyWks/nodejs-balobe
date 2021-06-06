@@ -15,14 +15,14 @@ exports.CreatePelapakController = async (req, res) => {
         }
 
         const queryDataPelapak = await GetDetailPelapakModel(req.auth.id_user);
-
+const defaultImagePath = process.env.APP_ENV === 'development' ? 'uploads/img-logo/default.jpg' : 'img-logo/default.jpg';
         if (queryDataPelapak[1][0]) {
             throw new Error("Your account is registered before")
         } else {
             const data = {
                 id_owner: req.auth.id_user,
                 name: req.body.name,
-                logo: "img-logo/default.jpg",
+                logo: defaultImagePath,
                 description: req.body.description,
                 city: req.body.city,
                 address: req.body.address,

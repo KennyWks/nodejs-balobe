@@ -53,12 +53,13 @@ exports.SignupController = async (req, res) => {
             role_id: req.body.role_id,
         }
         const resultUser = await CreateUserModel(dataUser);
+        const defaultImagePath = process.env.APP_ENV === 'development' ? 'uploads/img-users/default.png' : 'img-users/default.png';
 
         const dataUserProfiles = {
             id_user: resultUser[1].insertId,
             fullname: req.body.fullname,
             gender: req.body.gender,
-            picture: "img-users/default.png",
+            picture: defaultImagePath,
             address: req.body.address,
             email: req.body.email,
             phone: req.body.phone,

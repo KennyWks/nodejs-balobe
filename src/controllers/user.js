@@ -12,14 +12,11 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
   try {
     if (process.env.APP_ENV === "development") {
       const resultGetData = await GetDataUserProfiles(req.auth.id_user);
-      imageOld = resultGetData[1][0].picture;
 
+      imageOld = resultGetData[1][0].picture;
       let webPath = req.file.path.replace(/\\/g, "/");
 
-      if (
-        imageOld !== "uploads/img-users/default.png" &&
-        imageOld !== webPath
-      ) {
+      if (imageOld !== "uploads/img-users/default.png" && imageOld !== webPath) {
         let deleteImage = "./" + imageOld;
         fs.unlink(deleteImage, function (err) {
           if (err && err.code == "ENOENT") {
@@ -34,10 +31,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
         });
       }
 
-      await UpdateImageProfileUserModel(
-        webPath,
-        req.auth.id_user
-      );
+      await UpdateImageProfileUserModel(webPath, req.auth.id_user);
 
       res.status(201).send({
         data: {
@@ -50,10 +44,7 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
       const pathFile = `img-users/${req.auth.id_user}.${
         req.file.mimetype.split("/")[1]
       }`;
-      await UpdateImageProfileUserModel(
-        pathFile,
-        req.auth.id_user
-      );
+      await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
       await data.save(req.file.buffer);
