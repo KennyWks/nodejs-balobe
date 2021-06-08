@@ -76,7 +76,7 @@ exports.CreateTransactionController = async (req, res) => {
       }
 
       const result = await GetAllTransactionSellModel(params);
-      console.log(result[1][0]);
+      // console.log(result[1][0]);
       if (result) {
           const totalData = result[1][0].total
           const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -125,7 +125,7 @@ exports.CreateTransactionController = async (req, res) => {
         }
 
         const result = await GetAllTransactionBuyModel(params);
-        console.log(result[1][0]);
+        // console.log(result[1][0]);
         if (result) {
             const totalData = result[1][0].total
             const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));

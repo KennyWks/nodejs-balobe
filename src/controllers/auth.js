@@ -100,7 +100,6 @@ exports.SignupController = async (req, res) => {
             if (err) throw err;
             console.log('Email sent: ' + info.response);
         });
-
         //email last line code
         
         res.status(201).send({
@@ -183,7 +182,9 @@ exports.SigninController = async (req, res) => {
         if (!req.body.username || !req.body.password) {
             throw new Error("Username and password is required")
         }
+        
         const result = await GetUserDataSigninModel(req.body.username);
+        // console.log(result;
 
         if (result[1].length > 0) {
             const dataUser = result[1][0];
@@ -203,7 +204,7 @@ exports.SigninController = async (req, res) => {
                     res.status(201).send({
                         data: {
                             accesToken: token,
-                            msg: "Welcome! " + dataUser.username
+                            msg: `Welcome ${dataUser.username}!`
                         }
                     });
                 } else {
@@ -253,6 +254,7 @@ exports.ForgotPassController = async (req, res) => {
                     verify_code: hashEmail,
                     vc_for: 2
                 }
+        
                 await CreateTokenForForgetPassModel(dataUserVC);
 
                 //email firts line code

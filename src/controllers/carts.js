@@ -9,9 +9,10 @@ const {
 
 exports.CreateCartsController = async (req, res) => {
   try {
-    if (!req.body.total_item) {
-      throw new Error("total item can't be empty");
+    if (!Object.keys(req.body).length > 0) {
+      throw new Error("Please add data to process");
     }
+
     let totalPrice = req.body.total_item * req.body.price;
     const data = {
       id_user: req.auth.id_user,
@@ -23,22 +24,19 @@ exports.CreateCartsController = async (req, res) => {
       is_check_out: 0,
     };
 
-    const resultQuery = await CreateCartsModel(data);
-    if (resultQuery) {
-      res.status(200).send({
-        data: {
-          id: resultQuery[1].insertId,
-          msg: "your items is added to carts",
-        },
-      });
-    } else {
-      throw new Error("Error");
-    }
+    const result = await CreateCartsModel(data);
+    // console.log(result;
+    res.status(201).send({
+       data: {
+         id: result[1].insertId,
+         msg: "Your items is added to carts",
+      },
+    });
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong!",
+        msg: error.message || "Something wrong!",
       },
     });
   }
@@ -64,7 +62,7 @@ exports.GetAllCartsController = async (req, res) => {
     }
 
     const result = await GetAllCartsModel(params, req.auth.id_user);
-    // console.log(result[1][0].total);
+    // console.log(result[1][0]);
     if (result) {
       const totalData = result[1][0].total;
       const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -84,9 +82,9 @@ exports.GetAllCartsController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -102,14 +100,16 @@ exports.GetDetailCartsController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "carts is not found",
+        error: {
+            msg: "Carts is not found",
+          }
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -117,30 +117,35 @@ exports.GetDetailCartsController = async (req, res) => {
 
 exports.UpdateCartsController = async (req, res) => {
   try {
+    if (!Object.keys(req.body).length > 0) {
+      throw new Error("Please add data to update");
+    }
+
     const data = {
       total_item: req.body.total_item,
       total_price: req.body.total_price,
     };
+
     const result = await UpdateCartsModel(req.params.id, data);
     // console.log(result);
     if (result) {
       res.status(200).send({
         data: {
-          msg: `your carts is updated`,
+          msg: `Your carts is updated`,
         },
       });
     } else {
       res.status(404).send({
-        data: {
-          msg: `carts is not found`,
+        error: {
+          msg: `Carts is not found`,
         },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -148,6 +153,10 @@ exports.UpdateCartsController = async (req, res) => {
 
 exports.CheckOutContoller = async (req, res) => {
   try {
+    if (!Object.keys(req.body).length > 0) {
+      throw new Error("Please add data to process");
+    }
+
     const data = {
       id_user: req.auth.id_user,
       id_pelapak: req.body.id_pelapak,
@@ -157,25 +166,26 @@ exports.CheckOutContoller = async (req, res) => {
       total_price: req.body.total_price,
     };
     const result = await CheckOutModel(req.params.id, data);
+    // console.log(result;
     if (result) {
       res.status(200).send({
         data: {
           id: req.params.id,
-          msg: `your transaction is successfully process`,
+          msg: `Your transaction is successfully process`,
         },
       });
     } else {
       res.status(404).send({
-        data: {
-          msg: `carts is not found`,
+        error: {
+          msg: `Carts is not found`,
         },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -184,20 +194,23 @@ exports.CheckOutContoller = async (req, res) => {
 exports.CheckOutCheckedController = async (req, res) => {
   try {
     if (!Object.keys(req.body).length > 0) {
-      throw new Error("Please add data to update");
+      throw new Error("Please add data to process");
     }
 
     const result = await CheckOutCheckedModel(req.body);
-    res.status(200).send({
-      data: {
-        msg: `your transaction is successfully process`,
-      },
-    });
+    // console.log(result;
+    if(result){
+      res.status(200).send({
+        data: {
+          msg: `Your transaction is successfully process`,
+        },
+      });
+    }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }

@@ -12,7 +12,7 @@ exports.CreateRoleController = async (req, res) => {
              throw new Error("field name is required")
          }
          const result = await CreateRoleModel(req.body.name);
-         console.log(result);
+        //  console.log(result);
          res.status(201).send({
             data: {
                 id: result[1].insertId,
@@ -50,7 +50,7 @@ exports.GetAllRoleController = async (req, res) => {
         }
 
         const result = await GetAllRoleModel(params);
-        console.log(result[1][0]);
+        // console.log(result[1][0]);
         if (result) {
             const totalData = result[1][0].total
             const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -82,7 +82,7 @@ exports.GetAllRoleController = async (req, res) => {
 exports.GetDetailRoleController = async (req, res) => {
     try {
         const result = await GetDetailRoleModel(req.params.id);
-        console.log(result);
+        // console.log(result);
         if (result[1][0]) {
             res.status(200).send({
                 data: result[1][0],
@@ -119,7 +119,7 @@ exports.UpdateRoleController = async (req, res) => {
         });
 
         const result = await UpdateRoleModel(req.params.id, dataUpdate);
-        console.log(result);
+        // console.log(result);
         res.status(200).send({
             data: {
                 id: req.params.id,
@@ -139,7 +139,7 @@ exports.UpdateRoleController = async (req, res) => {
 exports.DeleteRoleController = async (req, res) => {
     try {
         const result = await DeleteRoleModel(req.params.id);
-        console.log(result);
+        // console.log(result);
         if (result[1].affectedRows) {
             res.status(200).send({
                 data: {

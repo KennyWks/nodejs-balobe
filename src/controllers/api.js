@@ -25,6 +25,11 @@ exports.GetCostData = (req, res) => {
     })
     .catch(function (err) {
       console.log(err);
+      res.status(500).send({
+        error: {
+          msg: err || "Something wrong",
+        },
+      });
     });
 };
 
@@ -44,5 +49,10 @@ exports.GetAllCityData = (req, res) => {
     })
     .catch(function (err) {
       console.log(err);
+      res.status(500).send({
+        error: {
+          msg: err || "Something wrong",
+        },
+      });
     });
 };

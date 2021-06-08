@@ -31,12 +31,13 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
         });
       }
 
-      await UpdateImageProfileUserModel(webPath, req.auth.id_user);
+      const result = await UpdateImageProfileUserModel(webPath, req.auth.id_user);
+      // console.log(result;
 
       res.status(201).send({
         data: {
           id_user: req.auth.id_user,
-          lokasiFile: webPath,
+          path: webPath,
           msg: "Image is uploaded",
         },
       });
@@ -44,7 +45,8 @@ exports.UpdateImageProfileUserContoller = async (req, res) => {
       const pathFile = `img-users/${req.auth.id_user}.${
         req.file.mimetype.split("/")[1]
       }`;
-      await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
+      const result =  await UpdateImageProfileUserModel(pathFile, req.auth.id_user);
+      // console.log(result;
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
       await data.save(req.file.buffer);
@@ -83,7 +85,7 @@ exports.UpdateProfileUserContoller = async (req, res) => {
     });
 
     const result = await UpdateProfileUserModel(req.auth.id_user, dataUpdate);
-    console.log(result);
+    // console.log(result);
     res.status(200).send({
       data: {
         id_user: req.auth.id_user,
@@ -145,7 +147,7 @@ exports.GetAllUserController = async (req, res) => {
     }
 
     const result = await GetAllUserModel(params);
-    console.log(result[1][0]);
+    // console.log(result[1][0]);
     if (result) {
       const totalData = result[1][0].total;
       const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));

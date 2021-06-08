@@ -12,11 +12,12 @@ exports.CreateCategoryController = async (req, res) => {
             throw new Error("field name or HS code is required")
         }
         const result = await CreateCategoryModel(req.body.hs_code,req.body.name);
-            res.status(201).send({
-                data: {
-                    id: result[1].insertId,
-                    msg: `Category with id ${result[1].insertId} succesfully created`
-                },
+        // console.log(result;
+        res.status(201).send({
+            data: {
+                id: result[1].insertId,
+                msg: `Category with id ${result[1].insertId} succesfully created`
+               },
             });
     } catch (error) {
         console.log(error);
@@ -48,7 +49,7 @@ exports.GetAllCategoryController = async (req, res) => {
         }
 
         const result = await GetAllCategoryModel(params);
-        console.log(result[1][0]);
+        // console.log(result[1][0]);
         if (result) {
             const totalData = result[1][0].total
             const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -79,7 +80,7 @@ exports.GetAllCategoryController = async (req, res) => {
 exports.GetDetailCategoryController = async (req, res) => {
     try {
         const result = await GetDetailCategoryModel(req.params.id);
-        console.log(result);
+        // console.log(result);
         if (result[1][0]) {
             res.status(200).send({
                 data: result[1][0],
@@ -104,7 +105,7 @@ exports.GetDetailCategoryController = async (req, res) => {
 exports.DeleteCategoryController = async (req, res) => {
     try {
         const result = await DeleteCategoryModel(req.params.id);
-        console.log(result);
+        // console.log(result);
         if (result[1].affectedRows) {
             res.status(200).send({
                 data: {
@@ -144,7 +145,7 @@ exports.UpdateCategoryController = async (req, res) => {
         });
 
         const result = await UpdateCategoryModel(req.params.id, dataUpdate);
-        console.log(result);
+        // console.log(result);
         res.status(200).send({
             data: {
                 id: req.params.id,

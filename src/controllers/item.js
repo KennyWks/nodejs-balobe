@@ -44,20 +44,18 @@ exports.CreateItemController = async (req, res) => {
         image: webPath,
       };
 
-      const resultQuery = await CreateItemModel(dataItems);
-      console.log(resultQuery);
-      if (resultQuery) {
-        res.status(200).send({
+      const result = await CreateItemModel(dataItems);
+      // console.log(result;
+
+      if (result) {
+        res.status(201).send({
           data: {
-            id: resultQuery[1].insertId,
+            id: result[1].insertId,
             msg: "Item is created",
           },
         });
-      } else {
-        throw new Error("Error");
       }
     } else {
-      console.log(req);
       const nameFileItem = new Date().getTime();
       const pathFile = `img-items/${nameFileItem}.${
         req.file.mimetype.split("/")[1]
@@ -74,11 +72,13 @@ exports.CreateItemController = async (req, res) => {
         image: pathFile,
       };
 
-      const resultQuery = await CreateItemModel(dataItems);
+      const result = await CreateItemModel(dataItems);
+      // console.log(result;
+
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
       await data.save(req.file.buffer);
-      res.status(200).send({
+      res.status(201).send({
         data: {
           path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(
             pathFile
@@ -89,9 +89,9 @@ exports.CreateItemController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong!",
+        msg: error.message || "Something wrong!",
       },
     });
   }
@@ -117,8 +117,7 @@ exports.GetAllItemController = async (req, res) => {
     }
 
     const result = await GetAllItemModel(params);
-    console.log(result);
-    console.log(result[1][0]);
+    // console.log(result);
     if (result) {
       const totalData = result[1][0].total;
       const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -138,9 +137,9 @@ exports.GetAllItemController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -166,7 +165,7 @@ exports.GetAllItemPelapakController = async (req, res) => {
     }
 
     const result = await GetAllItemPelapakModel(params, req.params.id);
-    console.log(result[1][0]);
+    // console.log(result[1][0]);
     if (result) {
       const totalData = result[1][0].total;
       const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -186,9 +185,9 @@ exports.GetAllItemPelapakController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -197,22 +196,23 @@ exports.GetAllItemPelapakController = async (req, res) => {
 exports.GetDetailItemController = async (req, res) => {
   try {
     const result = await GetDetailItemModel(req.params.id);
-    console.log(result);
-    // console.log(req.params.id);
+    // console.log(result);
     if (result[1][0]) {
       res.status(200).send({
         data: result[1][0],
       });
     } else {
       res.status(404).send({
-        msg: "Item is not found",
+        error: {
+          msg: "Item is not found",
+        },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -233,18 +233,15 @@ exports.UpdateItemContoller = async (req, res) => {
       "weight",
       "description",
     ];
+
     fillAble.forEach((v) => {
       if (req.body[v]) {
         dataUpdate[v] = req.body[v];
       }
     });
 
-    if (!Object.keys(dataUpdate).length > 0) {
-      throw new Error("Please add data to update");
-    }
-
     const result = await UpdateItemModel(req.params.id, dataUpdate);
-    console.log(result);
+    // console.log(result);
     res.status(200).send({
       data: {
         id: req.params.id,
@@ -253,9 +250,9 @@ exports.UpdateItemContoller = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -264,7 +261,7 @@ exports.UpdateItemContoller = async (req, res) => {
 exports.DeleteItemController = async (req, res) => {
   try {
     const result = await DeleteItemModel(req.params.id);
-    console.log(result);
+    // console.log(result);
     if (result[1].affectedRows) {
       res.status(200).send({
         data: {
@@ -275,9 +272,9 @@ exports.DeleteItemController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -287,11 +284,13 @@ exports.UpdateItemImageContoller = async (req, res) => {
   try {
     const resultGetData = await GetDataItem(req.params.id_item);
     if (resultGetData[1][0]) {
-      oldImages = resultGetData[1][0].image;
 
+      oldImages = resultGetData[1][0].image;
       if (process.env.APP_ENV === "development") {
+      
         let webPath = req.file.path.replace(/\\/g, "/");
         if (oldImages !== webPath) {
+      
           let deleteImage = "./" + oldImages;
           fs.unlink(deleteImage, function (err) {
             if (err && err.code == "ENOENT") {
@@ -306,15 +305,15 @@ exports.UpdateItemImageContoller = async (req, res) => {
           });
         }
 
-        const resultUpdate = await UpdateImageItemModel(
+        await UpdateImageItemModel(
           webPath,
           req.params.id_item
         );
 
-        res.status(200).send({
+        res.status(201).send({
           data: {
             id_item: req.params.id_item,
-            lokasiFile: webPath,
+            path: webPath,
             msg: "Image is uploaded",
           },
         });
@@ -324,7 +323,7 @@ exports.UpdateItemImageContoller = async (req, res) => {
           req.file.mimetype.split("/")[1]
         }`;
 
-        const resultUpdate = await UpdateImageItemModel(
+        await UpdateImageItemModel(
           pathFile,
           req.params.id_item
         );
@@ -337,7 +336,7 @@ exports.UpdateItemImageContoller = async (req, res) => {
         //save new images
         const data = bucket.file(pathFile);
         await data.save(req.file.buffer);
-        res.status(200).send({
+        res.status(201).send({
           data: {
             path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(
               pathFile
@@ -348,12 +347,14 @@ exports.UpdateItemImageContoller = async (req, res) => {
       }
     } else {
       res.status(404).send({
-        msg: "Item not found",
+        error: {
+          msg: "Item not found",
+        },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
         msg: error.message || "Something wrong",
       },
@@ -376,23 +377,20 @@ exports.CreateReviewController = async (req, res) => {
       review: req.body.review,
     };
 
-    const resultQuery = await CreateReviewItemModel(data);
-    console.log(resultQuery);
-    if (resultQuery) {
-      res.status(200).send({
+    const result = await CreateReviewItemModel(data);
+    // console.log(result);
+      res.status(201).send({
         data: {
-          id: resultQuery[1].insertId,
+          id: result[1].insertId,
           msg: "Review is created",
         },
       });
-    } else {
-      throw new Error("Error");
-    }
+    
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong!",
+        msg: error.message || "Something wrong!",
       },
     });
   }
@@ -412,12 +410,8 @@ exports.UpdateReviewController = async (req, res) => {
       }
     });
 
-    if (!Object.keys(dataUpdate).length > 0) {
-      throw new Error("Please add data to update");
-    }
-
     const result = await UpdateReviewItemModel(req.params.id, dataUpdate);
-    console.log(result);
+    // console.log(result);
     res.status(200).send({
       data: {
         id: req.params.id,
@@ -426,9 +420,9 @@ exports.UpdateReviewController = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -436,7 +430,6 @@ exports.UpdateReviewController = async (req, res) => {
 
 exports.GetReviewByUserController = async (req, res) => {
   try {
-    // console.log(req.auth.id_user);
     const result = await GetReviewByUserModel(req.auth.id_user);
     // console.log(result);
     if (result) {
@@ -445,14 +438,16 @@ exports.GetReviewByUserController = async (req, res) => {
       });
     } else {
       res.status(404).send({
-        msg: "Review is not found",
+        error: {
+          msg: "You review is not found",
+        },
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -460,22 +455,25 @@ exports.GetReviewByUserController = async (req, res) => {
 
 exports.GetReviewByIdController = async (req, res) => {
   try {
-    console.log(req.params.id);
     const result = await GetReviewByIdModel(req.params.id);
+    // console.log(result;
+
     if (result[1][0]) {
       res.status(200).send({
         data: result[1][0],
       });
     } else {
       res.status(404).send({
-        msg: "Review is not found",
+        error: {
+          msg: "Review is not found",
+        }
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -501,7 +499,7 @@ exports.GetAllReviewController = async (req, res) => {
     }
 
     const result = await GetAllReviewModel(params);
-    console.log(result[1][0]);
+    // console.log(result[1][0]);
     if (result) {
       const totalData = result[1][0].total;
       const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -521,9 +519,9 @@ exports.GetAllReviewController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
@@ -531,23 +529,24 @@ exports.GetAllReviewController = async (req, res) => {
 
 exports.GetReviewByIdItemController = async (req, res) => {
   try {
-    // console.log(req.params.id);
     const result = await GetReviewByIdItemModel(req.params.id);
-    console.log(result);
+    // console.log(result);
     if (result) {
       res.status(200).send({
         data: result[1],
       });
     } else {
       res.status(404).send({
-        msg: "Review is not found",
+        error: {
+          msg: "Review is not found",
+        }
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(404).send({
+    res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }

@@ -14,8 +14,8 @@ exports.CreatePelapakController = async (req, res) => {
             throw new Error("Data pelapak can't be empty!")
         }
 
+        const defaultImagePath = process.env.APP_ENV === 'development' ? 'uploads/img-logo/default.jpg' : 'img-logo/default.jpg';
         const queryDataPelapak = await GetDetailPelapakModel(req.auth.id_user);
-const defaultImagePath = process.env.APP_ENV === 'development' ? 'uploads/img-logo/default.jpg' : 'img-logo/default.jpg';
         if (queryDataPelapak[1][0]) {
             throw new Error("Your account is registered before")
         } else {
@@ -27,19 +27,21 @@ const defaultImagePath = process.env.APP_ENV === 'development' ? 'uploads/img-lo
                 city: req.body.city,
                 address: req.body.address,
             }
-            const resultQuery = await CreatePelapakModel(data);
-            res.status(200).send({
+            const result = await CreatePelapakModel(data);
+            // console.log(result;
+
+            res.status(201).send({
                 data: {
-                    id_pelapak: resultQuery[1].insertId,
-                    msg: "your store is created!"
+                    id_pelapak: result[1].insertId,
+                    msg: "Your store successfully created!"
                 },
             });
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -48,21 +50,24 @@ const defaultImagePath = process.env.APP_ENV === 'development' ? 'uploads/img-lo
 exports.GetDetailPelapakController = async (req, res) => {
     try {
         const result = await GetDetailPelapakModel(req.auth.id_user);
-        console.log(result);
+        // console.log(result);
         if (result[1][0]) {
             res.status(200).send({
                 data: result[1][0],
             });
         } else {
             res.status(404).send({
-                msg: "store is not found"
+                error: {
+                    msg: "Please register your store"
+                },
             });
+            
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }
@@ -73,6 +78,7 @@ exports.UpdatePelapakController = async (req, res) => {
         if (!Object.keys(req.body).length > 0) {
             throw new Error("Please add data to update");
         }
+
         const dataUpdate = {};
         const fillAble = ['name', 'description', 'city', 'address'];
         fillAble.forEach((v) => {
@@ -81,47 +87,46 @@ exports.UpdatePelapakController = async (req, res) => {
             }
         });
 
-        if (!Object.keys(dataUpdate).length > 0) {
-            throw new Error("Please add data to update");
-        }
-
         const result = await UpdatePelapakModel(req.auth.id_user, dataUpdate);
-        console.log(result);
+        // console.log(result);
         res.status(200).send({
             data: {
                 id: req.auth.id_user,
-                msg: "data account store is updated"
+                msg: "Your store is updated"
             },
         });
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }
 };
 
 exports.UpdateLogoContoller = async (req, res) => {
-    // console.log(req.file);
     try {
         if (process.env.APP_ENV === 'development') {
             let webPath = req.file.path.replace(/\\/g, '/');
             const result = await UpdateLogoModel(webPath, req.auth.id_user);
-            res.status(200).send({
+            // console.log(result;
+
+            res.status(201).send({
                 data: {
-                    lokasiFile: webPath,
+                    path: webPath,
                     msg: "Image is uploaded"
                 }
             })
         } else {
             const pathFile = `img-logo/${req.auth.id_user}.${req.file.mimetype.split("/")[1]}`;
-            const resultUpdate = await UpdateLogoModel(pathFile, req.auth.id_user);
+            const result = await UpdateLogoModel(pathFile, req.auth.id_user);
+            // console.log(result;
+
             const bucket = firebaseAdmin.storage().bucket();
             const data = bucket.file(pathFile);
             await data.save(req.file.buffer);
-            res.status(200).send({
+            res.status(201).send({
                 data: {
                     path: `https://firebasestorage.googleapis.com/v0/b/balobe-d2a28.appspot.com/o/${encodeURIComponent(pathFile)}?alt=media`,
                     msg: "Image is uploaded"
@@ -130,7 +135,7 @@ exports.UpdateLogoContoller = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "Something wrong"
             }
@@ -158,7 +163,7 @@ exports.GetAllPelapakContoller = async (req, res) => {
         }
 
         const result = await GetAllPelapakModel(params);
-        console.log(result[1][0]);
+        // console.log(result[1][0]);
         if (result) {
             const totalData = result[1][0].total
             const totalPages = Math.ceil(result[1][0].total / parseInt(params.limit));
@@ -178,7 +183,7 @@ exports.GetAllPelapakContoller = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(404).send({
+        res.status(500).send({
             error: {
                 msg: error.message || "something wrong",
             },
