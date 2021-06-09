@@ -101,7 +101,7 @@ exports.GetAllItemController = async (req, res) => {
   try {
     let params = {
       page: req.query.page || 1,
-      limit: req.query.limit || 5,
+      limit: req.query.limit || 8,
     };
 
     if (req.query.sort) {
