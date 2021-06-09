@@ -97,7 +97,9 @@ exports.SignupController = async (req, res) => {
       },
     });
 
-    const urlApp = "http://localhost:3000"; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
+    // const urlApp = "http://localhost:3000"; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
+    
+    const urlApp = "https://react-balobe.web.app"; 
     const id_user = resultUser[1].insertId;
     const mailOptions = {
       from: userGmail,
@@ -279,7 +281,9 @@ exports.ForgotPassController = async (req, res) => {
             pass: passGmail,
           },
         });
-        const urlApp = "http://localhost:3000"; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
+        // const urlApp = "http://localhost:3000"; // -> etc (https://balobe.herokuapp.com or domain google(for react ap))
+        
+        const urlApp = "https://react-balobe.web.app"; 
         const idUser = dataEmail[1][0].id_user;
         const mailOptions = {
           from: userGmail,
@@ -346,7 +350,9 @@ exports.ConfirmPassController = async (req, res) => {
 
         // check link is expired or not
         if (today.getTime() - createdDate < limitDateConfirm) {
-          const urlApp = "http://localhost:3000"; // -> for example (https://balobe.herokuapp.com or domain google(for react ap))
+          // const urlApp = "http://localhost:3000"; // -> for example (https://balobe.herokuapp.com or domain google(for react ap))
+          
+          const urlApp = "https://react-balobe.web.app"; 
           const result = await FinishConfirmChangePassModel(req.query.id_user);
           // console.log(result);
           res.status(200).send({
