@@ -6,15 +6,17 @@ const {
   GetDetailCartsController,
   UpdateCartsController,
   CheckOutContoller,
-  CheckOutCheckedController, 
+  CheckOutCheckedController,
+  DeleteCartsController,
 } = require("../controllers/carts");
 
 // CartsRouter.post("/", CreateCategory);
 CartsRouter.post("/", AuthUser, CreateCartsController);
 CartsRouter.get("/", AuthUser, GetAllCartsController);
 CartsRouter.get("/:id", AuthUser, GetDetailCartsController);
-CartsRouter.patch("/update/:id", AuthUser, UpdateCartsController);
+CartsRouter.delete("/:id", AuthUser, DeleteCartsController);
 CartsRouter.patch("/checkout/checked", AuthUser, CheckOutCheckedController);
+CartsRouter.patch("/update/:id", AuthUser, UpdateCartsController);
 CartsRouter.post("/checkout/:id", AuthUser, CheckOutContoller);
 
 module.exports = CartsRouter;

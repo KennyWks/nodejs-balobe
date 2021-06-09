@@ -16,6 +16,10 @@ ALTER TABLE transaction
     FOREIGN KEY (id_user) REFERENCES users(id_user)
     ON DELETE SET NULL;
 ALTER TABLE transaction
+    ADD CONSTRAINT fk_pelapak_transaction
+    FOREIGN KEY (id_pelapak) REFERENCES pelapak(id_pelapak)
+    ON DELETE SET NULL;
+ALTER TABLE transaction
     ADD CONSTRAINT fk_item_transaction
     FOREIGN KEY (list_item) REFERENCES items(id_item)
     ON DELETE SET NULL

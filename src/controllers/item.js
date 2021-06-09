@@ -45,7 +45,7 @@ exports.CreateItemController = async (req, res) => {
       };
 
       const result = await CreateItemModel(dataItems);
-      // console.log(result;
+      // console.log(result);
 
       if (result) {
         res.status(201).send({
@@ -73,7 +73,7 @@ exports.CreateItemController = async (req, res) => {
       };
 
       const result = await CreateItemModel(dataItems);
-      // console.log(result;
+      // console.log(result);
 
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
@@ -284,13 +284,10 @@ exports.UpdateItemImageContoller = async (req, res) => {
   try {
     const resultGetData = await GetDataItem(req.params.id_item);
     if (resultGetData[1][0]) {
-
       oldImages = resultGetData[1][0].image;
       if (process.env.APP_ENV === "development") {
-      
         let webPath = req.file.path.replace(/\\/g, "/");
         if (oldImages !== webPath) {
-      
           let deleteImage = "./" + oldImages;
           fs.unlink(deleteImage, function (err) {
             if (err && err.code == "ENOENT") {
@@ -305,10 +302,7 @@ exports.UpdateItemImageContoller = async (req, res) => {
           });
         }
 
-        await UpdateImageItemModel(
-          webPath,
-          req.params.id_item
-        );
+        await UpdateImageItemModel(webPath, req.params.id_item);
 
         res.status(201).send({
           data: {
@@ -323,10 +317,7 @@ exports.UpdateItemImageContoller = async (req, res) => {
           req.file.mimetype.split("/")[1]
         }`;
 
-        await UpdateImageItemModel(
-          pathFile,
-          req.params.id_item
-        );
+        await UpdateImageItemModel(pathFile, req.params.id_item);
         const bucket = firebaseAdmin.storage().bucket();
 
         //delete previous images
@@ -373,19 +364,19 @@ exports.CreateReviewController = async (req, res) => {
     const data = {
       id_user: req.auth.id_user,
       id_item: req.body.id_item,
+      id_pelapak: req.body.id_pelapak,
       rating: req.body.rating,
       review: req.body.review,
     };
 
     const result = await CreateReviewItemModel(data);
     // console.log(result);
-      res.status(201).send({
-        data: {
-          id: result[1].insertId,
-          msg: "Review is created",
-        },
-      });
-    
+    res.status(201).send({
+      data: {
+        id: result[1].insertId,
+        msg: "Review is created",
+      },
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -456,7 +447,7 @@ exports.GetReviewByUserController = async (req, res) => {
 exports.GetReviewByIdController = async (req, res) => {
   try {
     const result = await GetReviewByIdModel(req.params.id);
-    // console.log(result;
+    // console.log(result);
 
     if (result[1][0]) {
       res.status(200).send({
@@ -466,7 +457,7 @@ exports.GetReviewByIdController = async (req, res) => {
       res.status(404).send({
         error: {
           msg: "Review is not found",
-        }
+        },
       });
     }
   } catch (error) {
@@ -539,7 +530,7 @@ exports.GetReviewByIdItemController = async (req, res) => {
       res.status(404).send({
         error: {
           msg: "Review is not found",
-        }
+        },
       });
     }
   } catch (error) {

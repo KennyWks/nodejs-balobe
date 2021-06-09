@@ -44,7 +44,7 @@ exports.CreateArticleController = async (req, res) => {
         image: pathFile,
       };
       const result = await CreateArticleModel(dataArticle);
-      // console.log(result;
+      // console.log(result);
       const bucket = firebaseAdmin.storage().bucket();
       const data = bucket.file(pathFile);
       await data.save(req.file.buffer);
@@ -189,8 +189,12 @@ exports.UpdateArticleController = async (req, res) => {
 
       if (process.env.APP_ENV === "development") {
         let webPath = req.file.path.replace(/\\/g, "/");
-        const result = await UpdateArticleModel(req.params.id, dataUpdate, webPath);
-        // console.log(result;
+        const result = await UpdateArticleModel(
+          req.params.id,
+          dataUpdate,
+          webPath
+        );
+        // console.log(result);
         res.status(200).send({
           data: {
             id: req.params.id,
@@ -208,8 +212,12 @@ exports.UpdateArticleController = async (req, res) => {
             req.file.mimetype.split("/")[1]
           }`;
 
-          const result = await UpdateArticleModel(req.params.id, dataUpdate, pathFile);
-          // console.log(result;
+          const result = await UpdateArticleModel(
+            req.params.id,
+            dataUpdate,
+            pathFile
+          );
+          // console.log(result);
 
           const bucket = firebaseAdmin.storage().bucket();
 

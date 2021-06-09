@@ -24,7 +24,7 @@ exports.CreateRoleController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             error: {
-                msg: error.message || "something wrong!"
+                msg: error.message || "Something wrong!"
             },
         });
     }
@@ -72,7 +72,7 @@ exports.GetAllRoleController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }
@@ -98,7 +98,7 @@ exports.GetDetailRoleController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }
@@ -130,7 +130,7 @@ exports.UpdateRoleController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }
@@ -158,7 +158,7 @@ exports.DeleteRoleController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             error: {
-                msg: error.message || "something wrong",
+                msg: error.message || "Something wrong",
             },
         });
     }

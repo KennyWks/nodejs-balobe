@@ -64,18 +64,21 @@ exports.GetDetailCartsModel = (id_carts) => {
   });
 };
 
-exports.UpdateCartsModel = (id_carts, data) => {
+exports.UpdateCartsModel = (id_carts, body) => {
   return new Promise((resolve, reject) => {
     runQuery(`SELECT * FROM carts WHERE id=${id_carts}`, (err, result) => {
       if (err || !result[1][0]) {
-        return reject(new Error(`carts not exists`));
+        return reject(new Error(`carts with id : ${id_carts} not exists`));
       }
       runQuery(
-        `UPDATE carts SET total_item = ${data.total_item}, total_price = ${data.total_price} WHERE id = ${id_carts}`,
+        `UPDATE carts SET ${Object.keys(body)
+          .map((v) => `${v} = '${body[v]}'`)
+          .join(", ")} WHERE id=${id_carts}`,
         (err, result) => {
           if (err) {
             return reject(new Error(err));
           }
+          return resolve(result);
         }
       );
     });
@@ -95,7 +98,7 @@ exports.CheckOutModel = (id_carts, data) => {
             return reject(new Error(err));
           }
           runQuery(
-            `INSERT INTO transaction(id_user,id_pelapak,list_item,total_item,courier,total_price) values('${data.id_user}','${data.id_pelapak},'${data.list_item}','${data.total_item}','${data.courier}','${data.total_price}')`,
+            `INSERT INTO transaction(id_user,id_pelapak,list_item,total_item,courier,total_price) values('${data.id_user}','${data.id_pelapak}','${data.list_item}','${data.total_item}','${data.courier}','${data.total_price}')`,
             (err, result) => {
               if (err) {
                 return reject(new Error(err));
@@ -124,6 +127,22 @@ exports.CheckOutCheckedModel = (array_id) => {
           return resolve(result);
         }
       );
+    });
+  });
+};
+
+exports.DeleteCartsModel = (id_cart) => {
+  return new Promise((resolve, reject) => {
+    runQuery(`SELECT * FROM carts WHERE id=${id_cart}`, (err, result) => {
+      if (err || !result[1][0]) {
+        return reject(new Error(`cart not exists`));
+      }
+      runQuery(`DELETE FROM carts WHERE id=${id_cart}`, (err, result) => {
+        if (err) {
+          return reject(new Error(err));
+        }
+        return resolve(result);
+      });
     });
   });
 };

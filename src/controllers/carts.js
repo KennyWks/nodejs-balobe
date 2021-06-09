@@ -5,6 +5,7 @@ const {
   UpdateCartsModel,
   CheckOutModel,
   CheckOutCheckedModel,
+  DeleteCartsModel,
 } = require("../models/carts");
 
 exports.CreateCartsController = async (req, res) => {
@@ -25,11 +26,11 @@ exports.CreateCartsController = async (req, res) => {
     };
 
     const result = await CreateCartsModel(data);
-    // console.log(result;
+    // console.log(result);
     res.status(201).send({
-       data: {
-         id: result[1].insertId,
-         msg: "Your items is added to carts",
+      data: {
+        id: result[1].insertId,
+        msg: "Your items is added to carts",
       },
     });
   } catch (error) {
@@ -101,8 +102,8 @@ exports.GetDetailCartsController = async (req, res) => {
     } else {
       res.status(404).send({
         error: {
-            msg: "Carts is not found",
-          }
+          msg: "Carts is not found",
+        },
       });
     }
   } catch (error) {
@@ -121,13 +122,16 @@ exports.UpdateCartsController = async (req, res) => {
       throw new Error("Please add data to update");
     }
 
-    const data = {
-      total_item: req.body.total_item,
-      total_price: req.body.total_price,
-    };
+    const dataUpdate = {};
+    const fillAble = ["total_item", "total_price"];
+    fillAble.forEach((v) => {
+      if (req.body[v]) {
+        dataUpdate[v] = req.body[v];
+      }
+    });
 
-    const result = await UpdateCartsModel(req.params.id, data);
-    // console.log(result);
+    const result = await UpdateCartsModel(req.params.id, dataUpdate);
+    console.log(result);
     if (result) {
       res.status(200).send({
         data: {
@@ -166,7 +170,7 @@ exports.CheckOutContoller = async (req, res) => {
       total_price: req.body.total_price,
     };
     const result = await CheckOutModel(req.params.id, data);
-    // console.log(result;
+    // console.log(result);
     if (result) {
       res.status(200).send({
         data: {
@@ -198,11 +202,39 @@ exports.CheckOutCheckedController = async (req, res) => {
     }
 
     const result = await CheckOutCheckedModel(req.body);
-    // console.log(result;
-    if(result){
+    // console.log(result);
+    if (result) {
       res.status(200).send({
         data: {
           msg: `Your transaction is successfully process`,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      error: {
+        msg: error.message || "Something wrong",
+      },
+    });
+  }
+};
+
+exports.DeleteCartsController = async (req, res) => {
+  try {
+    const result = await DeleteCartsModel(req.params.id);
+    // console.log(result);
+    if (result[1].affectedRows) {
+      res.status(200).send({
+        data: {
+          id: parseInt(req.params.id),
+          msg: `Your carts succesfully canceled`,
+        },
+      });
+    } else {
+      res.status(404).send({
+        error: {
+          msg: `Carts is not found`,
         },
       });
     }

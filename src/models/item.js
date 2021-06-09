@@ -155,7 +155,7 @@ exports.CreateReviewItemModel = (data) => {
   return new Promise((resolve, reject) => {
     runQuery(
       `
-INSERT INTO items_review(id_user,id_item,rating,review) values('${data.id_user}', '${data.id_item}', '${data.rating}', '${data.review}')`,
+INSERT INTO items_review(id_user,id_item,id_pelapak,rating,review) values('${data.id_user}', '${data.id_item}', '${data.id_pelapak}', '${data.rating}', '${data.review}')`,
       (err, result) => {
         if (err) {
           return reject(new Error(err));
@@ -190,7 +190,19 @@ exports.UpdateReviewItemModel = (id, body) => {
 exports.GetReviewByUserModel = (id_user) => {
   return new Promise((resolve, reject) => {
     runQuery(
-      `SELECT * FROM items_review WHERE id_user=${id_user}`,
+      `SELECT 
+      items_review.id, 
+      items_review.id_user, 
+      items_review.id_item, 
+      items_review.rating, 
+      items_review.review, 
+      items.name as name_item, 
+      items.image,
+      pelapak.name as name_pelapak 
+      FROM items_review 
+      JOIN items ON items.id_item = items_review.id_item 
+      JOIN pelapak ON pelapak.id_pelapak = items_review.id_pelapak 
+      WHERE id_user=${id_user}`,
       (err, result) => {
         if (err) {
           return reject(new Error(err));
