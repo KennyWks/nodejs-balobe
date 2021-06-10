@@ -10,7 +10,7 @@ INSERT INTO items(id_pelapak,id_category,name,price,quantity,weight,description,
           return reject(new Error(err));
         }
         return resolve(result);
-      } 
+      }
     );
   });
 };
@@ -35,10 +35,19 @@ exports.GetAllItemModel = (params) => {
   return new Promise((resolve, reject) => {
     const { limit, page, sort, search } = params;
     const condition = ` ${search ? `WHERE name LIKE '%${search}%'` : ""}
-                        ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(limit)} OFFSET ${parseInt(page) - 1}`;
+                        ${
+                          sort ? `ORDER BY ${sort.key} ${sort.value}` : ""
+                        } LIMIT ${parseInt(limit)} OFFSET ${
+      parseInt(page) - 1
+    }`;
 
-    runQuery(`SELECT COUNT(*) AS total FROM items ${condition.substring(0, condition.indexOf("LIMIT"))};
-        SELECT ${column} FROM items AS u LEFT JOIN ${tableJoin} ON ${Join} ${condition}`, (err, result) => {
+    runQuery(
+      `SELECT COUNT(*) AS total FROM items ${condition.substring(
+        0,
+        condition.indexOf("LIMIT")
+      )};
+        SELECT ${column} FROM items AS u LEFT JOIN ${tableJoin} ON ${Join} ${condition}`,
+      (err, result) => {
         if (err) {
           return reject(new Error(err));
         }
@@ -187,22 +196,29 @@ exports.UpdateReviewItemModel = (id, body) => {
   });
 };
 
-exports.GetReviewByUserModel = (id_user) => {
+exports.GetReviewByUserModel = (params, id_user) => {
   return new Promise((resolve, reject) => {
+    const { limit, page, sort, search } = params;
+    const condition = `
+        ${search ? `&&  items_review.review LIKE '%${search}%'` : ""}
+        ${sort ? `ORDER BY ${sort.key} ${sort.value}` : ""} LIMIT ${parseInt(
+      limit
+    )} OFFSET ${parseInt(page) - 1}`;
+
+    const join =
+      "JOIN items ON items.id_item = items_review.id_item JOIN pelapak ON pelapak.id_pelapak = items_review.id_pelapak";
+
+    const select =
+      "items_review.id, items_review.id_user, items_review.id_item, items_review.rating, items_review.review, items.name AS name_item, items.image, pelapak.name AS name_pelapak";
+
     runQuery(
-      `SELECT 
-      items_review.id, 
-      items_review.id_user, 
-      items_review.id_item, 
-      items_review.rating, 
-      items_review.review, 
-      items.name as name_item, 
-      items.image,
-      pelapak.name as name_pelapak 
-      FROM items_review 
-      JOIN items ON items.id_item = items_review.id_item 
-      JOIN pelapak ON pelapak.id_pelapak = items_review.id_pelapak 
-      WHERE id_user=${id_user}`,
+      `
+        SELECT COUNT(*) AS total FROM items_review ${join} WHERE id_user = ${id_user} ${condition.substring(
+        0,
+        condition.indexOf("LIMIT")
+      )};
+        SELECT ${select} FROM items_review ${join} WHERE id_user = ${id_user} ${condition}
+        `,
       (err, result) => {
         if (err) {
           return reject(new Error(err));
