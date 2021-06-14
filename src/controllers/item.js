@@ -163,6 +163,8 @@ exports.GetAllItemPelapakController = async (req, res) => {
     if (req.query.q) {
       params.search = req.query.q;
     }
+        console.log(params);
+
 
     const result = await GetAllItemPelapakModel(params, req.params.id);
     // console.log(result[1][0]);
