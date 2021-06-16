@@ -196,7 +196,7 @@ exports.GetAllPelapakContoller = async (req, res) => {
     console.log(error);
     res.status(500).send({
       error: {
-        msg: error.message || "something wrong",
+        msg: error.message || "Something wrong",
       },
     });
   }
