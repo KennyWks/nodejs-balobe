@@ -206,7 +206,7 @@ exports.GetReviewByUserModel = (params, id_user) => {
     )} OFFSET ${parseInt(page) - 1}`;
 
     const join =
-      "JOIN items ON items.id_item = items_review.id_item JOIN pelapak ON pelapak.id_pelapak = items_review.id_pelapak";
+      "JOIN items ON items.id_item = items_review.id_item JOIN pelapak ON pelapak.id_pelapak = items_review.id_user";
 
     const select =
       "items_review.id, items_review.id_user, items_review.id_item, items_review.rating, items_review.review, items.name AS name_item, items.image, pelapak.name AS name_pelapak";
